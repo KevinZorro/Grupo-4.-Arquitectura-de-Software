@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Agendar cita virtual: qué dato cruza cada frontera",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1068,
+      620
+    ],
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "emphasis": {
+          "label": "Síncrono: espera respuesta"
+        },
+        "dashed": {
+          "label": "Asíncrono: por evento"
+        }
+      }
+    }
+  },
+  "stages": [
+    {
+      "label": "Paciente"
+    },
+    {
+      "label": "Núcleo (síncrono)"
+    },
+    {
+      "label": "Fronteras"
+    },
+    {
+      "label": "Trabajadores (evento)"
+    },
+    {
+      "label": "Terceros y sede"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "paciente",
+      "type": "frontend",
+      "label": "Portal del paciente",
+      "sublabel": "pide la cita virtual",
+      "stage": 0,
+      "row": 1,
+      "tag": "Idempotency-Key"
+    },
+    {
+      "id": "nucleo",
+      "type": "backend",
+      "label": "Núcleo asistencial",
+      "sublabel": "monolito modular",
+      "stage": 1,
+      "row": 1,
+      "tag": "orquesta la saga"
+    },
+    {
+      "id": "bd",
+      "type": "database",
+      "label": "BD de agenda",
+      "sublabel": "citas + outbox",
+      "stage": 1,
+      "row": 2,
+      "tag": "única por franja"
+    },
+    {
+      "id": "pagos",
+      "type": "external",
+      "label": "Pasarela de pagos",
+      "sublabel": "copago / cuota",
+      "stage": 2,
+      "row": 0,
+      "tag": "tercero"
+    },
+    {
+      "id": "broker",
+      "type": "messagebus",
+      "label": "Broker",
+      "sublabel": "CitaAgendada",
+      "stage": 2,
+      "row": 2,
+      "tag": "al menos una vez"
+    },
+    {
+      "id": "dlq",
+      "type": "messagebus",
+      "label": "Mensajes muertos",
+      "sublabel": "fallo definitivo",
+      "stage": 2,
+      "row": 3,
+      "tag": "revisión"
+    },
+    {
+      "id": "video",
+      "type": "backend",
+      "label": "Adaptador de video",
+      "sublabel": "crea la sala",
+      "stage": 3,
+      "row": 1,
+      "tag": "idempotente por id_cita"
+    },
+    {
+      "id": "notificador",
+      "type": "backend",
+      "label": "Notificador",
+      "sublabel": "envía el enlace",
+      "stage": 3,
+      "row": 2,
+      "tag": "idempotente por id_cita"
+    },
+    {
+      "id": "proveedor",
+      "type": "external",
+      "label": "Proveedor de video",
+      "sublabel": "sala opaca",
+      "stage": 4,
+      "row": 1,
+      "tag": "tercero"
+    },
+    {
+      "id": "mensajeria",
+      "type": "external",
+      "label": "SMS / correo",
+      "sublabel": "pasarela de mensajería",
+      "stage": 4,
+      "row": 2,
+      "tag": "tercero"
+    },
+    {
+      "id": "sede",
+      "type": "frontend",
+      "label": "Personal de la sede",
+      "sublabel": "llama al paciente",
+      "stage": 4,
+      "row": 3,
+      "tag": "plan B"
+    }
+  ],
+  "flows": [
+    {
+      "from": "paciente",
+      "to": "nucleo",
+      "label": "solicitud de cita",
+      "classification": "HTTPS · síncrono",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "from": "nucleo",
+      "to": "pagos",
+      "label": "monto + ref. opaca",
+      "classification": "síncrono · sin especialidad",
+      "variant": "emphasis"
+    },
+    {
+      "from": "nucleo",
+      "to": "bd",
+      "label": "cita + evento",
+      "classification": "misma transacción",
+      "variant": "emphasis",
+      "route": "vertical-channel"
+    },
+    {
+      "from": "bd",
+      "to": "broker",
+      "label": "evento",
+      "classification": "relay del outbox",
+      "variant": "dashed",
+      "route": "straight"
+    },
+    {
+      "from": "broker",
+      "to": "video",
+      "label": "CitaAgendada",
+      "classification": "al menos una vez",
+      "variant": "dashed"
+    },
+    {
+      "from": "broker",
+      "to": "notificador",
+      "label": "CitaAgendada",
+      "classification": "al menos una vez",
+      "variant": "dashed",
+      "route": "straight",
+      "labelDy": 32
+    },
+    {
+      "from": "video",
+      "to": "proveedor",
+      "label": "id opaco de sala",
+      "classification": "sin datos clínicos",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "from": "notificador",
+      "to": "mensajeria",
+      "label": "fecha, hora, sede",
+      "classification": "+ enlace, sin token",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "from": "broker",
+      "to": "dlq",
+      "label": "agotó reintentos",
+      "classification": "dead-letter",
+      "variant": "dashed",
+      "route": "vertical-channel"
+    },
+    {
+      "from": "dlq",
+      "to": "sede",
+      "label": "cita sin enlace o sala",
+      "classification": "bandeja de la sede",
+      "variant": "dashed",
+      "route": "straight"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Síncrono hasta el cobro",
+      "items": [
+        "Disponibilidad, reserva y cobro responden en la misma petición",
+        "Si el cobro falla se libera la retención del cupo",
+        "La cita confirmada y su evento se guardan en una sola transacción"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Por evento después",
+      "items": [
+        "Sala y enlace consumen CitaAgendada en paralelo",
+        "Si el video cae, el enlace igual sale: apunta al portal",
+        "Tras agotar reintentos la cita llega a la bandeja de la sede"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Qué cruza cada frontera",
+      "items": [
+        "Pagos: monto y referencia opaca, nunca la especialidad",
+        "Video: id opaco de sala; el token se emite al entrar",
+        "SMS: fecha, hora, sede y enlace al portal"
+      ]
+    }
+  ]
+}
