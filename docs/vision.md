@@ -20,6 +20,8 @@ Ninguna medida de este documento usa un número que no aparezca en esta tabla.
 | 875 citas perdidas por día | Derivado | 25 % sobre 3.500 |
 | 125 citas afectadas por cada 30 min de caída | Derivado | 250 citas/hora × 0,5 h |
 | 420 horas mensuales de jornada asistencial | Derivado | 14 h × 30 días |
+| Bloqueo del cupo de 15 min | Supuesto del grupo (A-02) | El cupo de la cita virtual queda retenido 15 min mientras el paciente paga; si el pago no se confirma, se libera |
+| Timeout de 5 s en la pasarela de pagos | Supuesto del grupo (A-02) | La creación de la transacción es síncrona; si la pasarela no responde en 5 s, la operación falla cerrada |
 
 **Supuesto A-01 — Laboratorios en convenio.** Cada IPS opera con laboratorios en convenio, no de libre elección del
 paciente. El sistema envía la orden de examen digital al laboratorio y recibe el resultado de vuelta. Si el supuesto es
@@ -45,7 +47,7 @@ diagrama de contexto de la sección 3 tiene dieciséis flechas.
 
 | Actor | Entrega al sistema | Recibe del sistema |
 |---|---|---|
-| Paciente | Identificación y contacto; solicitud de cita por especialidad, sede y modalidad; confirmación o cancelación del recordatorio; motivo de consulta; consentimiento de teleconsulta; audio y video | Cupos y comprobante de cita; recordatorios; enlace y token de la videoconsulta; sus resultados; su historia clínica, **solo la suya**; fórmula y órdenes |
+| Paciente | Identificación y contacto; solicitud de cita por especialidad, sede y modalidad; confirmación o cancelación del recordatorio; motivo de consulta; consentimiento de teleconsulta; audio y video | Cupos y comprobante de cita; recordatorios; enlace al portal y token de la videoconsulta; sus resultados; su historia clínica, **solo la suya**; fórmula y órdenes |
 | Profesional de salud | Disponibilidad y bloqueos de agenda; nota de atención y diagnóstico firmados; fórmula y órdenes; **justificación cuando accede a una historia fuera de su lista** | Agenda del día; historia del paciente que atiende, **acotada al episodio**; resultados asociados; stream de la videoconsulta |
 | Personal administrativo de la IPS | Agendamiento y reprogramación presencial; datos de autorización de la aseguradora; novedades de agenda | Disponibilidad; estado de autorizaciones; citas del día y no-asistencias. **No recibe contenido clínico** |
 | Auditoría / entes de control | Consulta filtrada de trazas; su identidad autenticada | Trazas de acceso inmutables; reportes de accesos denegados y de emergencia. **Solo metadato, solo lectura** |
