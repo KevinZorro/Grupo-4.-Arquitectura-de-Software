@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Agendar cita virtual · Secuencia",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1080,
+      620
+    ]
+  },
+  "participants": [
+    {
+      "id": "paciente",
+      "type": "external",
+      "label": "Paciente",
+      "sublabel": "portal / app"
+    },
+    {
+      "id": "nucleo",
+      "type": "backend",
+      "label": "Núcleo",
+      "sublabel": "agenda"
+    },
+    {
+      "id": "pasarela",
+      "type": "external",
+      "label": "Pasarela",
+      "sublabel": "pagos"
+    },
+    {
+      "id": "broker",
+      "type": "messagebus",
+      "label": "Broker",
+      "sublabel": "RabbitMQ"
+    },
+    {
+      "id": "workerVideo",
+      "type": "backend",
+      "label": "Adaptador video",
+      "sublabel": "worker"
+    },
+    {
+      "id": "workerMsg",
+      "type": "backend",
+      "label": "Adaptador mensajes",
+      "sublabel": "worker"
+    }
+  ],
+  "segments": [
+    {
+      "from": 150,
+      "to": 300,
+      "label": "Síncrono · el paciente espera"
+    },
+    {
+      "from": 330,
+      "to": 532,
+      "label": "Por evento · llega después"
+    }
+  ],
+  "messages": [
+    {
+      "from": "paciente",
+      "to": "nucleo",
+      "y": 176,
+      "label": "1 · Verificar disponibilidad",
+      "variant": "emphasis"
+    },
+    {
+      "from": "paciente",
+      "to": "nucleo",
+      "y": 204,
+      "label": "2 · Reservar cupo (15 min)",
+      "variant": "emphasis"
+    },
+    {
+      "from": "nucleo",
+      "to": "pasarela",
+      "y": 232,
+      "label": "3 · Iniciar pago (monto + ref. opaca)",
+      "variant": "default"
+    },
+    {
+      "from": "pasarela",
+      "to": "nucleo",
+      "y": 260,
+      "label": "enlace de pago",
+      "variant": "return"
+    },
+    {
+      "from": "nucleo",
+      "to": "paciente",
+      "y": 288,
+      "label": "PENDIENTE_PAGO + enlace de pago",
+      "variant": "return"
+    },
+    {
+      "from": "paciente",
+      "to": "pasarela",
+      "y": 352,
+      "label": "paga el copago",
+      "variant": "default"
+    },
+    {
+      "from": "pasarela",
+      "to": "nucleo",
+      "y": 380,
+      "label": "4 · Confirmar pago (webhook)",
+      "variant": "dashed"
+    },
+    {
+      "from": "nucleo",
+      "to": "broker",
+      "y": 408,
+      "label": "CitaConfirmada",
+      "variant": "dashed"
+    },
+    {
+      "from": "broker",
+      "to": "workerVideo",
+      "y": 436,
+      "label": "5 · Crear sala (sin token)",
+      "variant": "dashed"
+    },
+    {
+      "from": "broker",
+      "to": "workerMsg",
+      "y": 464,
+      "label": "6 · Enviar aviso (enlace al portal)",
+      "variant": "dashed"
+    },
+    {
+      "from": "workerVideo",
+      "to": "broker",
+      "y": 492,
+      "label": "SalaCreada",
+      "variant": "dashed"
+    },
+    {
+      "from": "broker",
+      "to": "nucleo",
+      "y": 520,
+      "label": "SalaCreada → portal",
+      "variant": "dashed"
+    }
+  ],
+  "activations": [
+    {
+      "participant": "nucleo",
+      "from": 170,
+      "to": 294,
+      "type": "backend"
+    },
+    {
+      "participant": "pasarela",
+      "from": 226,
+      "to": 266,
+      "type": "external"
+    },
+    {
+      "participant": "pasarela",
+      "from": 346,
+      "to": 386,
+      "type": "external"
+    },
+    {
+      "participant": "nucleo",
+      "from": 374,
+      "to": 414,
+      "type": "backend"
+    },
+    {
+      "participant": "broker",
+      "from": 402,
+      "to": 526,
+      "type": "messagebus"
+    },
+    {
+      "participant": "workerVideo",
+      "from": 430,
+      "to": 498,
+      "type": "backend"
+    },
+    {
+      "participant": "workerMsg",
+      "from": 458,
+      "to": 474,
+      "type": "backend"
+    }
+  ]
+}
