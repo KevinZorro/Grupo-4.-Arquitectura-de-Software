@@ -95,16 +95,29 @@
   ],
   "transitions": [
     {
+      "id": "falla-inicio",
+      "from": "pendiente",
+      "to": "cancelada",
+      "label": "falla paso 3",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "labelAt": [
+        293,
+        323
+      ]
+    },
+    {
       "id": "rechazo",
       "from": "pago",
       "to": "cancelada",
-      "label": "rechazado o vencido · CitaCancelada",
+      "label": "rechazado o vencido",
       "variant": "security",
       "fromSide": "bottom",
       "toSide": "top",
       "route": "straight",
       "labelAt": [
-        340,
+        345,
         233
       ]
     },
@@ -145,8 +158,8 @@
       "dot": "rose",
       "title": "Compensación",
       "items": [
-        "Rechazo o bloqueo vencido: CitaCancelada, cupo liberado y aviso al paciente",
-        "Pago tardío: se reasigna si la franja sigue libre; si no, se reembolsa y se avisa"
+        "Falla del paso 3: cupo liberado, el error se ve en pantalla",
+        "Rechazo o vencimiento: CitaCancelada y aviso; pago tardío: reasignar o reembolsar"
       ]
     }
   ]

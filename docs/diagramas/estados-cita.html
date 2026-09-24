@@ -5167,9 +5167,10 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <path d="M 154 157 L 748 157" class="a-emphasis" stroke-width="2.2" marker-end="url(#arrowhead-emphasis)"/>
 
         <!-- Transition paths -->
-        <path data-edge-from="pago" data-edge-to="cancelada" data-edge-label="rechazado o vencido · CitaCancelada" data-edge-key="0" data-edge-id="rechazo" data-composition-points="402,188;402,278" d="M 402 188 L 402 278" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="cancelada" data-edge-to="confirmada" data-edge-label="pago tardío, franja libre" data-edge-key="1" data-edge-id="reasigna" data-composition-points="465,307;556,307;556,188" d="M 465 307 L 546 307 Q 556 307 556 297 L 556 188" class="a-emphasis" stroke-width="2" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="cancelada" data-edge-to="reembolsada" data-edge-label="franja ocupada" data-edge-key="2" data-edge-id="reembolso" data-composition-points="402,336;402,450" d="M 402 336 L 402 450" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="pendiente" data-edge-to="cancelada" data-edge-label="falla paso 3" data-edge-key="0" data-edge-id="falla-inicio" data-composition-points="248,188;248,307;339,307" d="M 248 188 L 248 297 Q 248 307 258 307 L 339 307" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="pago" data-edge-to="cancelada" data-edge-label="rechazado o vencido" data-edge-key="1" data-edge-id="rechazo" data-composition-points="402,188;402,278" d="M 402 188 L 402 278" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="cancelada" data-edge-to="confirmada" data-edge-label="pago tardío, franja libre" data-edge-key="2" data-edge-id="reasigna" data-composition-points="465,307;556,307;556,188" d="M 465 307 L 546 307 Q 556 307 556 297 L 556 188" class="a-emphasis" stroke-width="2" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="cancelada" data-edge-to="reembolsada" data-edge-label="franja ocupada" data-edge-key="3" data-edge-id="reembolso" data-composition-points="402,336;402,450" d="M 402 336 L 402 450" class="a-security" stroke-width="1.1" marker-end="url(#arrowhead-security)"/>
 
         <!-- States -->
         <g id="node-elegida" data-node-id="elegida" data-node-label="Franja elegida" tabindex="0" role="button" aria-label="Focus Franja elegida, disponibilidad ok, Camino principal" aria-pressed="false" data-node-kind="start" data-node-sublabel="disponibilidad ok" data-node-tag="síncrono" data-node-context="Camino principal">
@@ -5267,15 +5268,19 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         </g>
 
         <!-- Transition labels -->
-        <g data-detail="context" data-edge-from="pago" data-edge-to="cancelada" data-edge-label="rechazado o vencido · CitaCancelada" data-edge-key="0" data-edge-id="rechazo">
-          <rect x="248.25" y="222" width="183.5" height="16" rx="4" class="c-mask"/>
-          <text x="340" y="233" class="t-security" font-size="8" text-anchor="middle">rechazado o vencido · CitaCancelada</text>
+        <g data-detail="context" data-edge-from="pendiente" data-edge-to="cancelada" data-edge-label="falla paso 3" data-edge-key="0" data-edge-id="falla-inicio">
+          <rect x="257.6" y="312" width="70.80000000000001" height="16" rx="4" class="c-mask"/>
+          <text x="293" y="323" class="t-security" font-size="8" text-anchor="middle">falla paso 3</text>
         </g>
-        <g data-detail="context" data-edge-from="cancelada" data-edge-to="confirmada" data-edge-label="pago tardío, franja libre" data-edge-key="1" data-edge-id="reasigna">
+        <g data-detail="context" data-edge-from="pago" data-edge-to="cancelada" data-edge-label="rechazado o vencido" data-edge-key="1" data-edge-id="rechazo">
+          <rect x="292.45" y="222" width="105.10000000000001" height="16" rx="4" class="c-mask"/>
+          <text x="345" y="233" class="t-security" font-size="8" text-anchor="middle">rechazado o vencido</text>
+        </g>
+        <g data-detail="context" data-edge-from="cancelada" data-edge-to="confirmada" data-edge-label="pago tardío, franja libre" data-edge-key="2" data-edge-id="reasigna">
           <rect x="488.75" y="226.5" width="134.5" height="16" rx="4" class="c-mask"/>
           <text x="556" y="237.5" class="t-backend" font-size="8" text-anchor="middle">pago tardío, franja libre</text>
         </g>
-        <g data-detail="context" data-edge-from="cancelada" data-edge-to="reembolsada" data-edge-label="franja ocupada" data-edge-key="2" data-edge-id="reembolso">
+        <g data-detail="context" data-edge-from="cancelada" data-edge-to="reembolsada" data-edge-label="franja ocupada" data-edge-key="3" data-edge-id="reembolso">
           <rect x="414.7" y="361" width="80.60000000000001" height="16" rx="4" class="c-mask"/>
           <text x="455" y="372" class="t-security" font-size="8" text-anchor="middle">franja ocupada</text>
         </g>
@@ -5511,8 +5516,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <h3>Compensación</h3>
         </div>
         <ul>
-          <li>&bull; Rechazo o bloqueo vencido: CitaCancelada, cupo liberado y aviso al paciente</li>
-          <li>&bull; Pago tardío: se reasigna si la franja sigue libre; si no, se reembolsa y se avisa</li>
+          <li>&bull; Falla del paso 3: cupo liberado, el error se ve en pantalla</li>
+          <li>&bull; Rechazo o vencimiento: CitaCancelada y aviso; pago tardío: reasignar o reembolsar</li>
         </ul>
       </div>
     </div>

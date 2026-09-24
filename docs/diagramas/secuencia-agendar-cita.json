@@ -7,7 +7,7 @@
     "column_fit": "spread",
     "viewBox": [
       1080,
-      660
+      620
     ]
   },
   "participants": [
@@ -51,18 +51,13 @@
   "segments": [
     {
       "from": 150,
-      "to": 250,
+      "to": 300,
       "label": "Síncrono · el paciente espera"
     },
     {
-      "from": 262,
-      "to": 506,
+      "from": 330,
+      "to": 532,
       "label": "Por evento · llega después"
-    },
-    {
-      "from": 518,
-      "to": 580,
-      "label": "Al entrar a la consulta"
     }
   ],
   "messages": [
@@ -70,147 +65,128 @@
       "from": "paciente",
       "to": "nucleo",
       "y": 176,
-      "label": "1–2 · elige y reserva franja",
+      "label": "1 · Verificar disponibilidad",
+      "variant": "emphasis"
+    },
+    {
+      "from": "paciente",
+      "to": "nucleo",
+      "y": 204,
+      "label": "2 · Reservar cupo (15 min)",
       "variant": "emphasis"
     },
     {
       "from": "nucleo",
       "to": "pasarela",
-      "y": 206,
-      "label": "3 · crea transacción",
+      "y": 232,
+      "label": "3 · Iniciar pago (monto + ref. opaca)",
       "variant": "default"
+    },
+    {
+      "from": "pasarela",
+      "to": "nucleo",
+      "y": 260,
+      "label": "enlace de pago",
+      "variant": "return"
     },
     {
       "from": "nucleo",
       "to": "paciente",
-      "y": 236,
+      "y": 288,
       "label": "PENDIENTE_PAGO + enlace de pago",
       "variant": "return"
     },
     {
       "from": "paciente",
       "to": "pasarela",
-      "y": 282,
+      "y": 352,
       "label": "paga el copago",
       "variant": "default"
     },
     {
       "from": "pasarela",
       "to": "nucleo",
-      "y": 312,
-      "label": "4 · webhook aprobado",
+      "y": 380,
+      "label": "4 · Confirmar pago (webhook)",
       "variant": "dashed"
     },
     {
       "from": "nucleo",
       "to": "broker",
-      "y": 342,
+      "y": 408,
       "label": "CitaConfirmada",
       "variant": "dashed"
     },
     {
       "from": "broker",
       "to": "workerVideo",
-      "y": 372,
-      "label": "5 · crea sala sin token",
+      "y": 436,
+      "label": "5 · Crear sala (sin token)",
       "variant": "dashed"
     },
     {
       "from": "broker",
       "to": "workerMsg",
-      "y": 402,
-      "label": "6 · aviso en paralelo",
-      "variant": "dashed"
-    },
-    {
-      "from": "workerMsg",
-      "to": "paciente",
-      "y": 432,
-      "label": "enlace al portal",
+      "y": 464,
+      "label": "6 · Enviar aviso (enlace al portal)",
       "variant": "dashed"
     },
     {
       "from": "workerVideo",
       "to": "broker",
-      "y": 462,
+      "y": 492,
       "label": "SalaCreada",
       "variant": "dashed"
     },
     {
       "from": "broker",
       "to": "nucleo",
-      "y": 492,
+      "y": 520,
       "label": "SalaCreada → portal",
       "variant": "dashed"
-    },
-    {
-      "from": "paciente",
-      "to": "nucleo",
-      "y": 536,
-      "label": "entra desde el portal",
-      "variant": "emphasis"
-    },
-    {
-      "from": "nucleo",
-      "to": "workerVideo",
-      "y": 566,
-      "label": "pide token de vigencia corta",
-      "variant": "default"
     }
   ],
   "activations": [
     {
       "participant": "nucleo",
       "from": 170,
-      "to": 244,
+      "to": 294,
       "type": "backend"
     },
     {
       "participant": "pasarela",
-      "from": 200,
-      "to": 214,
+      "from": 226,
+      "to": 266,
       "type": "external"
     },
     {
       "participant": "pasarela",
-      "from": 276,
-      "to": 320,
+      "from": 346,
+      "to": 386,
       "type": "external"
     },
     {
       "participant": "nucleo",
-      "from": 306,
-      "to": 350,
+      "from": 374,
+      "to": 414,
       "type": "backend"
     },
     {
       "participant": "broker",
-      "from": 336,
-      "to": 500,
+      "from": 402,
+      "to": 526,
       "type": "messagebus"
     },
     {
       "participant": "workerVideo",
-      "from": 366,
-      "to": 470,
+      "from": 430,
+      "to": 498,
       "type": "backend"
     },
     {
       "participant": "workerMsg",
-      "from": 396,
-      "to": 440,
-      "type": "backend"
-    },
-    {
-      "participant": "nucleo",
-      "from": 530,
-      "to": 574,
-      "type": "backend"
-    },
-    {
-      "participant": "workerVideo",
-      "from": 560,
-      "to": 574,
+      "from": 458,
+      "to": 474,
       "type": "backend"
     }
   ]

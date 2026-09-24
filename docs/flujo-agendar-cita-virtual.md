@@ -2,7 +2,7 @@
 
 Actividad «Del flujo al patrón» · Caso 4, Citas médicas y telemedicina · Grupo 4
 
-**Supuesto A-02.** El copago de la cita virtual se paga en línea al agendar. Por eso entra la pasarela de pagos como octavo actor.
+**Supuesto A-02.** El copago de la cita virtual se paga en línea al agendar. Por eso entra la pasarela de pagos como octavo actor. La pasarela solo recibe el monto y una referencia opaca de la cita, sin especialidad, motivo ni datos clínicos.
 
 ## Paso 1. El flujo
 
@@ -10,7 +10,7 @@ Actividad «Del flujo al patrón» · Caso 4, Citas médicas y telemedicina · G
 |---|---|---|
 | 1 | **Verificar disponibilidad** del profesional en la franja elegida | Módulo de agenda (núcleo) |
 | 2 | **Reservar el cupo** con un bloqueo de 15 minutos; la cita queda en `PENDIENTE_PAGO` | Módulo de agenda (núcleo) |
-| 3 | **Iniciar el pago:** crear la transacción y devolverle al paciente el enlace de pago | Núcleo → pasarela de pagos |
+| 3 | **Iniciar el pago:** crear la transacción con el monto y la referencia opaca de la cita, y devolverle al paciente el enlace de pago | Núcleo (llama a la pasarela de pagos) |
 | 4 | **Confirmar el pago:** la pasarela avisa por webhook; la cita pasa a `CONFIRMADA` y el núcleo publica `CitaConfirmada`, o pasa a `CANCELADA` y publica `CitaCancelada` | Pasarela de pagos → núcleo |
 | 5 | **Crear la sala de video**, sin token. Al terminar publica `SalaCreada` | Adaptador de video (worker) |
 | 6 | **Enviar el aviso** al paciente con fecha, hora, sede y el enlace al **portal**, sin datos clínicos | Adaptador de mensajería (worker) |
@@ -27,7 +27,7 @@ La pregunta del laboratorio: ¿el paciente necesita que este paso haya terminado
 |---|---|---|---|---|---|
 | 1 | Verificar disponibilidad | Agenda | Síncrono | Nada que deshacer. Se le ofrece otra franja. | Es solo lectura, no pasa nada. |
 | 2 | Reservar cupo (bloqueo 15 min) | Agenda | Síncrono | Nada que deshacer: no alcanzó a cambiar nada. | Idempotente por **id de solicitud** que manda el cliente. Además, restricción única (profesional, franja) en la base de datos. |
-| 3 | Iniciar pago | Pasarela | Síncrono, timeout de 5 s | **Compensa:** liberar el cupo. | Idempotente por **id de cita**, que va como referencia a la pasarela: no se crean dos transacciones. |
+| 3 | Iniciar pago (monto + referencia opaca) | Núcleo | Síncrono, timeout de 5 s | **Compensa:** si la pasarela no responde o devuelve error, la cita pasa a `CANCELADA` y se libera el cupo. El paciente ve el error en pantalla porque está esperando la respuesta, así que no se le envía aviso. | Idempotente por **id de cita**, que va como referencia a la pasarela: no se crean dos transacciones. |
 | 4 | Confirmar pago | Pasarela → núcleo | Evento (webhook) | **Compensa:** si el pago se rechaza o el bloqueo vence, la cita pasa a `CANCELADA`, se publica `CitaCancelada`, se libera el cupo y se le avisa al paciente que la cita no quedó agendada. Si el webhook no llega, se consulta el estado a la pasarela antes de liberar. Si el pago llega aprobado cuando el cupo ya se liberó, se reasigna si la franja sigue libre; si no, se reembolsa y se le avisa al paciente. | Idempotente por **id de transacción**. Las pasarelas reenvían el webhook hasta recibir 200. |
 | 5 | Crear sala (sin token) | Adaptador de video | Evento (`CitaConfirmada`) | La cita no se deshace. Reintentos con espera creciente, luego cola de mensajes muertos y alerta al administrativo. El aviso del paso 6 sale igual; el portal muestra «sala en preparación» hasta recibir `SalaCreada`. | Idempotente por **id de cita**: una cita, una sala. |
 | 6 | Enviar aviso con enlace al portal | Adaptador de mensajería | Evento (`CitaConfirmada`), en paralelo con el 5 | **Sin compensación posible:** un mensaje enviado no se recoge. Reintentos y cola de mensajes muertos; la cita se ve igual en el portal. | Idempotente por **id de cita + tipo de mensaje**, con registro de envíos guardado en la base de datos. |
@@ -37,7 +37,7 @@ La pregunta del laboratorio: ¿el paciente necesita que este paso haya terminado
 | Evento | Lo publica | Lo consumen |
 |---|---|---|
 | `CitaConfirmada` | Núcleo, al recibir el webhook de pago aprobado | Adaptador de video (paso 5), adaptador de mensajería (paso 6), auditoría |
-| `CitaCancelada` | Núcleo, cuando el pago se rechaza o el bloqueo vence | Adaptador de mensajería (aviso de cita no agendada), auditoría |
+| `CitaCancelada` | Núcleo, cuando falla el inicio del pago, el pago se rechaza o el bloqueo vence. Lleva el motivo | Auditoría; adaptador de mensajería (aviso de cita no agendada, salvo cuando el motivo es la falla del paso 3) |
 | `SalaCreada` | Adaptador de video, al crear la sala | Núcleo, para mostrar la sala en el portal |
 
 **Auditoría.** El metadato del agendamiento (quién agendó, cuándo, en qué estado quedó la cita) llega a la auditoría por evento. El acceso a la historia clínica sigue auditándose de forma síncrona, pero no participa en este flujo.
@@ -50,7 +50,7 @@ La pregunta del laboratorio: ¿el paciente necesita que este paso haya terminado
 
 ![Estados de la cita y su compensación](diagramas/estados-cita.png)
 
-*Figura 2. Estados de la cita. Una tarea programada dentro del núcleo revisa los bloqueos vencidos. Versión interactiva: [`diagramas/estados-cita.html`](diagramas/estados-cita.html).*
+*Figura 2. Estados de la cita, incluida la falla del paso 3. Una tarea programada dentro del núcleo revisa los bloqueos vencidos. Versión interactiva: [`diagramas/estados-cita.html`](diagramas/estados-cita.html).*
 
 ## Por qué así
 
