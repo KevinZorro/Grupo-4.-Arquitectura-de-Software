@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Agendar cita virtual · Estados de la cita",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1030,
+      630
+    ]
+  },
+  "lanes": [
+    {
+      "id": "main",
+      "label": "Camino principal"
+    },
+    {
+      "id": "exceptions",
+      "label": "Compensación"
+    },
+    {
+      "id": "terminal",
+      "label": "Salida final"
+    }
+  ],
+  "states": [
+    {
+      "id": "elegida",
+      "type": "start",
+      "label": "Franja elegida",
+      "sublabel": "disponibilidad ok",
+      "lane": "main",
+      "col": 0,
+      "step": "01",
+      "tag": "síncrono"
+    },
+    {
+      "id": "pendiente",
+      "type": "waiting",
+      "label": "PENDIENTE_PAGO",
+      "sublabel": "cupo bloqueado 15 min",
+      "lane": "main",
+      "col": 1,
+      "step": "02",
+      "tag": "síncrono"
+    },
+    {
+      "id": "pago",
+      "type": "decision",
+      "label": "¿Pago aprobado?",
+      "sublabel": "webhook / conciliación",
+      "lane": "main",
+      "col": 2,
+      "step": "03",
+      "tag": "evento"
+    },
+    {
+      "id": "confirmada",
+      "type": "active",
+      "label": "CONFIRMADA",
+      "sublabel": "sala y aviso en paralelo",
+      "lane": "main",
+      "col": 3,
+      "step": "04",
+      "tag": "evento"
+    },
+    {
+      "id": "lista",
+      "type": "success",
+      "label": "Sala lista",
+      "sublabel": "token al entrar",
+      "lane": "main",
+      "col": 4,
+      "step": "05",
+      "tag": "evento"
+    },
+    {
+      "id": "cancelada",
+      "type": "failure",
+      "label": "CANCELADA",
+      "sublabel": "cupo liberado · se avisa",
+      "lane": "exceptions",
+      "col": 0,
+      "tag": "compensa"
+    },
+    {
+      "id": "reembolsada",
+      "type": "failure",
+      "label": "Reembolsada",
+      "sublabel": "pago tardío · se avisa",
+      "lane": "terminal",
+      "col": 0,
+      "tag": "terminal"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "rechazo",
+      "from": "pago",
+      "to": "cancelada",
+      "label": "rechazado o vencido · CitaCancelada",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight",
+      "labelAt": [
+        340,
+        233
+      ]
+    },
+    {
+      "id": "reasigna",
+      "from": "cancelada",
+      "to": "confirmada",
+      "label": "pago tardío, franja libre",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "bottom"
+    },
+    {
+      "id": "reembolso",
+      "from": "cancelada",
+      "to": "reembolsada",
+      "label": "franja ocupada",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight",
+      "labelAt": [
+        455,
+        372
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Camino principal",
+      "items": [
+        "01–02 pasan mientras el paciente espera",
+        "03–05 llegan por webhook y por CitaConfirmada / SalaCreada"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Compensación",
+      "items": [
+        "Rechazo o bloqueo vencido: CitaCancelada, cupo liberado y aviso al paciente",
+        "Pago tardío: se reasigna si la franja sigue libre; si no, se reembolsa y se avisa"
+      ]
+    }
+  ]
+}
