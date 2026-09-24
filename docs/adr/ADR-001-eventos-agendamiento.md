@@ -34,7 +34,7 @@ aprobado, el cupo se libera y se publica `CitaCancelada`.
 consulta, no cuando se agenda. El Adaptador de mensajería consume el mismo `CitaConfirmada` —no `SalaCreada`— y envía
 la confirmación con enlace **al portal del paciente**, nunca a la sala.
 
-**Se mantiene síncrona y bloqueante una sola integración:** el registro de acceso a la historia clínica. Sin traza
+**De la auditoría, solo se mantiene síncrono y bloqueante el registro de acceso a la historia clínica.** Sin traza
 escrita no se entrega la historia, aunque eso cueste latencia y aunque implique negar el acceso cuando el Servicio de
 auditoría está caído. El metadato del agendamiento sí viaja por evento, porque ahí no se está entregando contenido
 clínico a nadie.
@@ -45,7 +45,7 @@ restricción de unicidad, consultada antes de actuar, porque el broker entrega a
 | Consumidor | Clave de idempotencia | Qué pasa sin ella |
 |---|---|---|
 | Núcleo, al recibir el webhook de pago | `idTransaccion` | La cita se confirma dos veces y se publican dos `CitaConfirmada` |
-| Núcleo, al crear la transacción de pago | `idReserva` | Un doble clic abre dos transacciones y el paciente puede pagar dos veces |
+| Núcleo, al crear la transacción de pago | `idCita` | Un doble clic abre dos transacciones y el paciente puede pagar dos veces |
 | Adaptador de video | `idCita` | Salas huérfanas y cobro doble del proveedor |
 | Adaptador de mensajería | (`idCita`, `tipoMensaje`) | El paciente recibe el mismo mensaje varias veces: ruido para él, costo por mensaje para la red |
 | Servicio de auditoría | `idEvento` | La traza es solo anexado: un duplicado queda escrito dos veces y ensucia la evidencia |
@@ -81,25 +81,22 @@ salió. Y desaparecerían la idempotencia persistida, la cola de mensajes muerto
 - **La cita nace en un estado intermedio.** Entre la respuesta al paciente y el webhook hay una ventana de hasta 15
   minutos en la que el cupo está retenido y la cita no existe todavía. El portal debe mostrar «pago pendiente» y no un
   espacio en blanco, porque un espacio en blanco genera una llamada a la sede.
-- **Pago aprobado fuera de la ventana.** Si el webhook llega después de que la retención venció y el cupo ya fue
-  tomado, hay dinero cobrado sin cita. No se confirma nada de forma automática: el caso entra a una bandeja de
-  conciliación para reagendar o devolver. Es la consecuencia más incómoda de esta decisión y hay que nombrarla, no
+- **Pago aprobado fuera de la ventana.** Si el webhook llega después de que la retención venció, hay dinero cobrado
+  con el cupo ya liberado. Si la franja sigue libre, la cita se reasigna y se confirma; si otro paciente la tomó, se
+  reembolsa el pago y se le avisa al paciente. Es la consecuencia más incómoda de esta decisión y hay que nombrarla, no
   esconderla.
 - **Idempotencia que hay que persistir y mantener:** la tabla de arriba crece con cada cita, hay que purgarla y hay
   que ampliarla cuando aparezca un consumidor nuevo.
 - **El error del tercero ya no aparece en la respuesta HTTP.** Ahora vive en la cola de mensajes muertos y en la
   bandeja de la sede. Si nadie las mira, el fallo se vuelve silencioso, que es peor que ruidoso.
-- **Una frontera más por donde pueden salir datos.** Lo que viaja en los eventos y hacia la pasarela de pagos es el
-  mínimo: monto y referencia opaca, identificadores de cita y de paciente; nunca diagnóstico, especialidad ni motivo
-  de consulta.
+- **Una frontera más por donde pueden salir datos.** A la pasarela de pagos solo van el monto y una referencia opaca.
+  En los eventos viaja el mínimo: identificadores de cita y de paciente; nunca diagnóstico, especialidad ni motivo de
+  consulta.
 
 ## Qué señal nos haría cambiar de opinión
 
 - Si la pasarela de pagos dejara de entregar webhooks confiables y tuviéramos que consultar el estado en todos los
   casos, el camino rápido sobra: el respaldo pasa a ser el mecanismo principal y el webhook se elimina.
-- Si el proveedor de video ofreciera salas con enlace permanente por cita y respondiera de forma estable por debajo de
-  los 300 ms, la creación de la sala podría volver al camino síncrono y el broker quedaría solo para mensajería,
-  auditoría y laboratorio.
 - Si el volumen de mensajes resultara tan bajo que operar un broker no se justifique, se reemplaza por una tabla de
   salida (outbox) en la base clínica, leída por un proceso programado: se pierde el aislamiento de procesos, se gana
   una pieza menos.
