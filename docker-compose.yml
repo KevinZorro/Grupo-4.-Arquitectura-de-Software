@@ -1,0 +1,58 @@
+services:
+  postgres-core:
+    image: postgres:16-alpine
+    container_name: citas-postgres-core
+    environment:
+      POSTGRES_USER: core
+      POSTGRES_PASSWORD: core_password
+      POSTGRES_DB: core_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_core_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U core -d core_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-auditoria:
+    image: postgres:16-alpine
+    container_name: citas-postgres-auditoria
+    environment:
+      POSTGRES_USER: audit
+      POSTGRES_PASSWORD: audit_password
+      POSTGRES_DB: audit_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_audit_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U audit -d audit_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: citas-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: app
+      RABBITMQ_DEFAULT_PASS: app_password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: citas-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  postgres_core_data:
+  postgres_audit_data:
+  rabbitmq_data:
