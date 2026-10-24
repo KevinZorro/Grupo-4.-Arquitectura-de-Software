@@ -1,6 +1,6 @@
 # Matriz de cumplimiento de fechas límite
 
-Generada el 2026-10-24 04:24:51 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
+Generada el 2026-10-24 17:45:33 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
 
 ## Resumen por persona
 
@@ -9,7 +9,7 @@ Generada el 2026-10-24 04:24:51 (America/Bogota). Una tarea cuenta a tiempo si s
 | Wilhen Gutiérrez | 3 | 0 | 0 | 0 | 3 | 7 | 0 |
 | Angel Montañez | 3 | 0 | 0 | 0 | 3 | 7 | 0 |
 | Nefer Rojas | 3 | 0 | 0 | 0 | 3 | 7 | 0 |
-| Javier Rincón | 3 | 0 | 0 | 0 | 3 | 7 | 0 |
+| Javier Rincón | 3 | 2 | 0 | 0 | 1 | 7 | 0 |
 | Kevin Zorro | 2 | 0 | 0 | 0 | 2 | 7 | 0 |
 | Juan Camilo Uribe | 3 | 0 | 0 | 0 | 3 | 7 | 0 |
 
@@ -17,8 +17,8 @@ Generada el 2026-10-24 04:24:51 (America/Bogota). Una tarea cuenta a tiempo si s
 
 | Tarea | Issue | Responsable | Vence | Estado | Cerrada | Días de retraso | Horas |
 |---|---|---|---|---|---|---|---|
-| FUN-1 | [#11](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/11) | Javier Rincón | 2026-10-25 | Pendiente | — | 0 | 2 |
-| FUN-2 | [#12](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/12) | Javier Rincón | 2026-10-25 | Pendiente | — | 0 | 3 |
+| FUN-1 | [#11](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/11) | Javier Rincón | 2026-10-25 | A tiempo | 2026-10-24 | 0 | 2 |
+| FUN-2 | [#12](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/12) | Javier Rincón | 2026-10-25 | A tiempo | 2026-10-24 | 0 | 3 |
 | FUN-3 | [#13](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/13) | Kevin Zorro | 2026-10-26 | Pendiente | — | 0 | 5 |
 | FUN-4 | [#14](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/14) | Juan Camilo Uribe | 2026-10-26 | Pendiente | — | 0 | 3 |
 | PAG-1 | [#15](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/15) | Angel Montañez | 2026-10-26 | Pendiente | — | 0 | 2 |
