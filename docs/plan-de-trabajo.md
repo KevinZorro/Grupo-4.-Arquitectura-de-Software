@@ -90,7 +90,7 @@ cumple y Podría queda fuera del semestre salvo que sobre tiempo.
 | RF-06.2 | Normalizarlos a un formato común y conciliarlos con la orden y el paciente, con acuse de recibo | RF-06, ADR-005 | Debería | LAB-2 |
 | RF-06.3 | Resolver en una bandeja manual lo que no concilia | Visión §7 | Debería | LABUI |
 | **RF-07** | **Portal del paciente** | | | |
-| RF-07.1 | Ver mis citas con su estado (pago pendiente, confirmada, sala en preparación o cancelada) | RF-07, ADR-001 | Debe | AGE-8, PAG-6, VID-2 |
+| RF-07.1 | Ver mis citas con su estado (pago pendiente, confirmada, sala en preparación o cancelada) | RF-07, ADR-001 | Debe | AGE-2, AGE-8, PAG-6, VID-2 |
 | RF-07.2 | Ver mi historia y solo la mía | RF-07 | Debe | POR-2 |
 | RF-07.3 | Ver mis resultados, fórmulas y órdenes | RF-07 | Debería | FOR, LABUI |
 | RF-07.4 | Entrar a la videoconsulta desde el portal | ADR-001 | Debe | VID-5 |
@@ -410,7 +410,7 @@ y desde el S2 pasa a la auditoría y el laboratorio, cuyo régimen síncrono o p
 
 | Persona | Tareas | h | PR fusionado a más tardar |
 |---|---|---|---|
-| **Wilhen Gutiérrez** (líder), agenda | **AGE-1** Modelo de franja y cita con sus estados (2 h)<br>**AGE-2** API de búsqueda de franjas libres (2 h)<br>**AGE-3** Reserva exclusiva con `Idempotency-Key`, restricción única y bloqueo de 15 min, con prueba de doble reserva (3 h) | 7 | AGE-1 y AGE-2, martes 27; AGE-3, miércoles 28 |
+| **Wilhen Gutiérrez** (líder), agenda | **AGE-1** Modelo de franja y cita con sus estados (2 h)<br>**AGE-2** API de búsqueda de franjas libres y de «mis citas» (2 h)<br>**AGE-3** Reserva exclusiva con `Idempotency-Key`, restricción única y bloqueo de 15 min, con prueba de doble reserva (3 h) | 7 | AGE-1 y AGE-2, martes 27; AGE-3, miércoles 28 |
 | **Javier Rincón**, infraestructura y video | **FUN-1** Monorepo con npm workspaces, TypeScript estricto, ESLint y Prettier (2 h)<br>**FUN-2** `docker-compose.yml` con el PostgreSQL del núcleo, el PostgreSQL de auditoría, RabbitMQ y Mailpit, más `.env.example` (3 h)<br>**VID-1** Adaptador de video mínimo que consume `CitaConfirmada`, crea una sala simulada con id opaco y publica `SalaCreada` (2 h) | 7 | FUN-1 y FUN-2, domingo 25; VID-1, miércoles 28 |
 | **Angel Montañez**, pago del copago | **PAG-1** Pasarela simulada con creación de transacción, página para aprobar o rechazar y webhook firmado con HMAC (2 h)<br>**PAG-2** Inicio del pago desde el núcleo con timeout de 5 s, idempotente por `idCita` y con compensación (2 h)<br>**PAG-3** Webhook con verificación de firma, idempotencia por `idTransaccion`, cambio de estado y evento en la bandeja de salida, con pruebas de firma inválida y de duplicado (3 h) | 7 | PAG-1, lunes 26; PAG-2 y PAG-3, miércoles 28 |
 | **Nefer Rojas**, eventos y mensajería | **EVT-1** Paquete `eventos` con contratos en zod, publicador con bandeja de salida y consumidor idempotente, con prueba de mensaje repetido (4 h)<br>**EVT-3** Bandeja de salida en el núcleo, con su tabla y el proceso que publica (1 h)<br>**MSG-1** Adaptador de mensajería mínimo que pide al núcleo los datos del aviso y envía el correo a Mailpit con la plantilla mínima (2 h) | 7 | EVT-1, martes 27; EVT-3 y MSG-1, miércoles 28 |
