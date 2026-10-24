@@ -1,0 +1,51 @@
+name: Seguimiento de fechas límite
+
+on:
+  schedule:
+    - cron: '5 5 * * *' # 00:05 en Colombia (UTC-5), justo después de que vence cada día
+  issues:
+    types: [closed, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+
+concurrency:
+  group: seguimiento-fechas
+  cancel-in-progress: false
+
+jobs:
+  matriz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probar el generador
+        run: node --test scripts/seguimiento/*.test.mjs
+
+      - name: Generar la matriz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/seguimiento/matriz.mjs "$RUNNER_TEMP/matriz"
+
+      - name: Guardar la matriz en la rama seguimiento
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin seguimiento >/dev/null; then
+            git fetch --depth 1 origin seguimiento
+            git checkout -B seguimiento FETCH_HEAD
+          else
+            git checkout --orphan seguimiento
+            git rm -rf --quiet .
+          fi
+          cp "$RUNNER_TEMP"/matriz/matriz-fechas.* .
+          git add matriz-fechas.md matriz-fechas.csv
+          if git diff --cached --quiet; then
+            echo "Sin cambios en la matriz"
+            exit 0
+          fi
+          git commit -m "chore(seguimiento): update deadline matrix"
+          git push origin seguimiento

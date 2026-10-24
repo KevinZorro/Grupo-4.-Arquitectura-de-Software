@@ -1,0 +1,30 @@
+{
+  "timeZone": "America/Bogota",
+  "people": {
+    "wfgp12": "Wilhen Gutiérrez",
+    "angelmoncorre-ufps": "Angel Montañez",
+    "Neferxd31": "Nefer Rojas",
+    "JavierSneiderRinconMoreno": "Javier Rincón",
+    "KevinZorro": "Kevin Zorro",
+    "camilo2212": "Juan Camilo Uribe"
+  },
+  "tasks": [
+    { "issue": 11, "id": "FUN-1", "hours": 2, "due": "2026-10-25" },
+    { "issue": 12, "id": "FUN-2", "hours": 3, "due": "2026-10-25" },
+    { "issue": 13, "id": "FUN-3", "hours": 5, "due": "2026-10-26" },
+    { "issue": 14, "id": "FUN-4", "hours": 3, "due": "2026-10-26" },
+    { "issue": 15, "id": "PAG-1", "hours": 2, "due": "2026-10-26" },
+    { "issue": 16, "id": "EVT-1", "hours": 4, "due": "2026-10-27" },
+    { "issue": 17, "id": "AGE-1", "hours": 2, "due": "2026-10-27" },
+    { "issue": 18, "id": "AGE-2", "hours": 2, "due": "2026-10-27" },
+    { "issue": 19, "id": "EVT-3", "hours": 1, "due": "2026-10-28" },
+    { "issue": 20, "id": "AGE-3", "hours": 3, "due": "2026-10-28" },
+    { "issue": 21, "id": "PAG-2", "hours": 2, "due": "2026-10-28" },
+    { "issue": 22, "id": "PAG-3", "hours": 3, "due": "2026-10-28" },
+    { "issue": 23, "id": "MSG-1", "hours": 2, "due": "2026-10-28" },
+    { "issue": 24, "id": "VID-1", "hours": 2, "due": "2026-10-28" },
+    { "issue": 25, "id": "AGE-8", "hours": 3, "due": "2026-10-28" },
+    { "issue": 26, "id": "DEM-1", "hours": 1, "due": "2026-10-29" },
+    { "issue": 27, "id": "INT-1", "hours": 2, "due": "2026-10-29" }
+  ]
+}
