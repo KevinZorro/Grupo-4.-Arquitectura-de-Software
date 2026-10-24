@@ -1,4 +1,4 @@
-Tarea del plan: `<ID>` (ver `docs/plan-de-trabajo.md`)
+Closes #<número del issue> · tarea `<ID>` del plan (ver `docs/plan-de-trabajo.md`)
 
 ## Qué y por qué
 

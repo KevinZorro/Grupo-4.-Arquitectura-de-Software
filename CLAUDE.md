@@ -35,7 +35,8 @@ integrabilidad sin fuga (`docs/adr/ADR-000-vision-y-atributos.md`).
 - Documentos en español. El lenguaje del dominio sigue los ADR en español (`CitaConfirmada`, `idCita`, `PENDIENTE_PAGO`).
 - Los eventos llevan solo identificadores; ningún dato clínico cruza hacia pasarela, mensajería o video (ADR-001).
 - Datos de semillas y pruebas siempre ficticios.
-- Tareas con ID del plan (`AGE-3`, `PAG-2`...); ramas `feat/<id>-<tema>`.
+- Tareas con ID del plan (`AGE-3`, `PAG-2`...); ramas `feat/<id>-<tema>`; el PR lleva `Closes #<issue>`.
+- Fechas límite en `docs/seguimiento/fechas-limite.json`; `.github/workflows/seguimiento-fechas.yml` publica la matriz en la rama `seguimiento`. Al agregar tareas de otro sprint, agregarlas a ese JSON.
 - `README.md` lleva la tabla de documentos con su autor: agregar la fila al crear un documento nuevo.
 
 ## Reglas de trabajo

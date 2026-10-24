@@ -550,6 +550,9 @@ quien se atrase; Wilhen tiene menos porque ya carga 4 h de coordinación.
   `docker compose up`, la documentación o el ADR quedaron al día si aplicaba y no lleva secretos ni datos reales.
 - Quien vaya a incumplir una fecha lo avisa el mismo día, y su pareja decide con Wilhen si toma la tarea o si se
   recorta.
+- Cada PR lleva `Closes #<número del issue>` en su descripción. Al fusionarse cierra el issue, y el workflow `seguimiento-fechas`
+  registra si se cerró a tiempo en la rama `seguimiento` (`matriz-fechas.md` y `.csv`); las fechas límite están en
+  `docs/seguimiento/fechas-limite.json`.
 - Cada ADR lo escribe quien implementa la decisión, antes de implementarla cuando sea posible.
 - Wilhen actualiza este documento en la reunión semanal cuando cambien el alcance o las fechas.
 
