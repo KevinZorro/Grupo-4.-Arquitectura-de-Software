@@ -1,6 +1,13 @@
+import { execFileSync } from 'node:child_process';
+import { join } from 'node:path';
 import { Client } from 'pg';
 
-/** Fails fast, with a readable message, when the database the e2e suite needs is not there. */
+const APP_DIR = join(__dirname, '..');
+
+/**
+ * Fails fast, with a readable message, when the database the e2e suite needs is not there,
+ * and brings it to the latest migration so the tests run against the real schema.
+ */
 export default async function setup(): Promise<void> {
   const url = process.env.CORE_DATABASE_URL;
   if (!url) {
@@ -22,4 +29,11 @@ export default async function setup(): Promise<void> {
   } finally {
     await client.end().catch(() => undefined);
   }
+
+  // Applies only migrations that are committed and not yet applied; it never creates new ones.
+  execFileSync('npx', ['prisma', 'migrate', 'deploy'], {
+    cwd: APP_DIR,
+    env: process.env,
+    stdio: 'pipe',
+  });
 }
