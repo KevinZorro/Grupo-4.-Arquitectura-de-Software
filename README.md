@@ -18,6 +18,7 @@ Nefer Sneyder Rojas Porras · Kevin David Zorro Hernández · Juan Camilo Uribe 
 | `docs/adr/ADR-001-eventos-agendamiento.md` | Borrador del ADR-001: el pago se confirma por webhook, y la sala y los avisos salen por evento | Nefer Rojas |
 | `docs/plan-de-trabajo.md` · `docs/img/cronograma.png` | Plan de trabajo: RF y RNF detallados, tamaño y estimación, capacidad del equipo, cronograma del semestre y reparto por persona del avance del 30 de octubre | Kevin Zorro |
 | `docs/reunion-de-arranque.md` | Lo que se aprueba en la reunión de arranque del sprint 1: decisiones técnicas, contratos y reparto | Kevin Zorro |
+| `packages/eventos/README.md` | Uso del paquete de eventos: contratos, topología de colas, publicador y consumidor idempotente, con ejemplos para los adaptadores | Nefer Rojas |
 
 ## Decisiones clave
 
