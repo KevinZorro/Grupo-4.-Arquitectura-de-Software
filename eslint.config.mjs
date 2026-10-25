@@ -3,7 +3,13 @@ import tseslint from 'typescript-eslint';
 import { globalIgnores } from 'eslint/config';
 
 export default tseslint.config(
-  globalIgnores(['node_modules/**', 'dist/**', 'scripts/seguimiento/**']),
+  globalIgnores([
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/coverage/**',
+    'apps/*/src/generated/**',
+    'scripts/seguimiento/**',
+  ]),
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
