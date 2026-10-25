@@ -5,12 +5,14 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Publico } from '../identidad';
 import { PrismaService } from '../prisma/prisma.service';
 import { EstadoNucleoDto } from './estado-nucleo.dto';
 
 /** Health must answer fast even when the database hangs, so the ping gets its own deadline. */
 const DATABASE_PING_TIMEOUT_MS = 2_000;
 
+@Publico()
 @ApiTags('infraestructura')
 @Controller('health')
 export class HealthController {

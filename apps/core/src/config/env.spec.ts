@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { InvalidConfigurationError, isSwaggerEnabled, parseEnv } from './env';
+import { InvalidConfigurationError, isDevHeaderEnabled, isSwaggerEnabled, parseEnv } from './env';
 
 const VALID = {
   NODE_ENV: 'development',
@@ -82,6 +82,14 @@ describe('parseEnv', () => {
         'CORS_ORIGINS',
       );
     });
+  });
+});
+
+describe('isDevHeaderEnabled', () => {
+  it('works while developing and testing, and nowhere else', () => {
+    expect(isDevHeaderEnabled('development')).toBe(true);
+    expect(isDevHeaderEnabled('test')).toBe(true);
+    expect(isDevHeaderEnabled('production')).toBe(false);
   });
 });
 

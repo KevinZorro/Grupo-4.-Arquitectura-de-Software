@@ -61,6 +61,14 @@ export function parseEnv(raw: Record<string, unknown>): Env {
   );
 }
 
+/**
+ * The X-Usuario-Dev header stands in for login until IDN-1 lands. It works while developing and
+ * testing and nowhere else, so a deployment that forgets to configure real login stays closed.
+ */
+export function isDevHeaderEnabled(nodeEnv: Env['NODE_ENV']): boolean {
+  return nodeEnv === 'development' || nodeEnv === 'test';
+}
+
 /** Swagger documents every route, internal ones included, so it only exists while developing. */
 export function isSwaggerEnabled(nodeEnv: Env['NODE_ENV']): boolean {
   return nodeEnv === 'development';

@@ -1,7 +1,8 @@
 import { StandardSchemaValidationPipe, type INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { AppConfig } from './config/app-config';
-import { isSwaggerEnabled } from './config/env';
+import { isDevHeaderEnabled, isSwaggerEnabled } from './config/env';
+import { CABECERA_USUARIO_DEV } from './identidad';
 import { setupSwagger } from './swagger';
 
 export const API_PREFIX = 'api/v1';
@@ -21,16 +22,20 @@ export function configureApp(app: INestApplication): void {
   // Validates every @Body, @Query and @Param that declares a zod `schema`.
   app.useGlobalPipes(new StandardSchemaValidationPipe());
 
+  const nodeEnv = config.get('NODE_ENV', { infer: true });
   const origins = config.get('CORS_ORIGINS', { infer: true });
   if (origins.length > 0) {
     app.enableCors({
       origin: origins,
-      allowedHeaders: CORS_ALLOWED_HEADERS,
+      // The development header is only worth allowing where it works.
+      allowedHeaders: isDevHeaderEnabled(nodeEnv)
+        ? [...CORS_ALLOWED_HEADERS, CABECERA_USUARIO_DEV]
+        : CORS_ALLOWED_HEADERS,
       maxAge: CORS_PREFLIGHT_MAX_AGE_SECONDS,
     });
   }
 
-  if (isSwaggerEnabled(config.get('NODE_ENV', { infer: true }))) {
+  if (isSwaggerEnabled(nodeEnv)) {
     setupSwagger(app);
   }
 }

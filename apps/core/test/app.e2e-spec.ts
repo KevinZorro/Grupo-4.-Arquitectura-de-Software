@@ -1,38 +1,14 @@
-import { Controller, Get, type INestApplication } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
+import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { AppModule } from '../src/app.module';
-import { configureApp } from '../src/app.setup';
-
-// Stand-ins for routes that later tasks will add, to prove where the global prefix applies.
-@Controller('sondeo')
-class ApiProbeController {
-  @Get()
-  ping(): { ok: boolean } {
-    return { ok: true };
-  }
-}
-
-@Controller('internal/v1/sondeo')
-class InternalProbeController {
-  @Get()
-  ping(): { ok: boolean } {
-    return { ok: true };
-  }
-}
+import { createTestApp } from './helpers/app';
+import { SondeoInternoController, SondeoPublicoController } from './helpers/sondeos';
 
 describe('núcleo (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-      controllers: [ApiProbeController, InternalProbeController],
-    }).compile();
-    app = moduleRef.createNestApplication();
-    configureApp(app);
-    await app.init();
+    app = await createTestApp([SondeoPublicoController, SondeoInternoController]);
   });
 
   afterAll(async () => {
@@ -40,7 +16,7 @@ describe('núcleo (e2e)', () => {
   });
 
   describe('GET /health', () => {
-    it('reports the state of the database', async () => {
+    it('reports the state of the database, with no user', async () => {
       const response = await request(app.getHttpServer()).get('/health').expect(200);
 
       expect(response.body).toEqual({ estado: 'ok', base: 'ok' });
