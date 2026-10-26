@@ -1,4 +1,8 @@
 import { crearApp } from './app';
+import { cargarEntorno } from './entorno';
+
+// Antes de leer process.env: `.env` de la app y de la raíz, como el núcleo.
+cargarEntorno();
 
 const puerto = Number(process.env.PASARELA_PORT ?? 4000);
 const baseUrl = (process.env.PASARELA_BASE_URL ?? `http://localhost:${puerto}`).replace(/\/+$/, '');
