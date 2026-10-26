@@ -33,3 +33,13 @@ Nefer Sneyder Rojas Porras · Kevin David Zorro Hernández · Juan Camilo Uribe 
 
 Abrir <https://structurizr.com/dsl>, pegar el contenido de `docs/contenedores.dsl` y presionar **Render**.
 La imagen exportada está en `docs/contenedores.png`.
+
+## Cómo arrancar el frontend
+
+Requiere como minimo Node 20.19 .
+
+    npm install
+    cp apps/web/.env.example apps/web/.env
+    npm run dev -w @citas/web
+
+coloque <http://localhost:5173>. El selector de usuario semilla de la barra superior solo aparece en desarrollo; el login real llega con IDN-2. La URL del núcleo sale de `VITE_API_URL` 

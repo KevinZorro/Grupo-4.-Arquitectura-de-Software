@@ -49,3 +49,5 @@ integrabilidad sin fuga (`docs/adr/ADR-000-vision-y-atributos.md`).
 - Plan corto antes de cambios medianos; ADR para decisiones de arquitectura, escrito por quien la implementa.
 - Pruebas después de cada cambio; nunca declarar terminado con pruebas fallando.
 - Leer este archivo antes de explorar y actualizarlo en 1-2 líneas cuando cambie la estructura o aparezca un gotcha.
+
+- `npm run dev -w @citas/web` levanta el frontend en `http://localhost:5173` (copiar antes `apps/web/.env.example` a `.env`).
