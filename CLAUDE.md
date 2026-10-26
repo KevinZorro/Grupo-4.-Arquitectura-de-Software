@@ -15,6 +15,8 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
 
 ## Comandos
 - Aún no hay código. Cuando se fusionen FUN-1 a FUN-3: `docker compose up` levanta todo.
+- `npm run build -w @citas/eventos` compila el paquete a `dist/` (las apps lo cargan desde ahí); `npm test -w
+  @citas/eventos` corre sus pruebas, y la de mensaje repetido necesita `docker compose up`.
 <!-- Actualizar esta sección con install, dev, test, lint y migraciones cuando exista el monorepo. -->
 
 ## Estructura
