@@ -1,7 +1,7 @@
 tarea,issue,titulo,responsable,vence,estado,cerrada,dias_retraso,horas
 FUN-1,11,"FUN-1 Estructura del monorepo, TypeScript estricto, ESLint y Prettier",Javier Rincón,2026-10-25,A tiempo,2026-10-24,0,2
 FUN-2,12,"FUN-2 docker-compose con dos PostgreSQL, RabbitMQ y Mailpit",Javier Rincón,2026-10-25,A tiempo,2026-10-24,0,3
-FUN-3,13,FUN-3 Esqueleto del núcleo NestJS con Prisma y semilla,Kevin Zorro,2026-10-26,Pendiente,,0,5
+FUN-3,13,FUN-3 Esqueleto del núcleo NestJS con Prisma y semilla,Kevin Zorro,2026-10-26,A tiempo,2026-10-26,0,5
 FUN-4,14,"FUN-4 Esqueleto del frontend con Vite, React y TypeScript",Juan Camilo Uribe,2026-10-26,Pendiente,,0,3
 PAG-1,15,PAG-1 Pasarela de pagos simulada con webhook firmado,Angel Montañez,2026-10-26,Pendiente,,0,2
 EVT-1,16,"EVT-1 Paquete de eventos con contratos, publicador y consumidor idempotente",Nefer Rojas,2026-10-27,A tiempo,2026-10-26,0,4
