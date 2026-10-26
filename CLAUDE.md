@@ -17,6 +17,7 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
 - Aún no hay código. Cuando se fusionen FUN-1 a FUN-3: `docker compose up` levanta todo.
 - `npm run build -w @citas/eventos` compila el paquete a `dist/` (las apps lo cargan desde ahí); `npm test -w
   @citas/eventos` corre sus pruebas, y la de mensaje repetido necesita `docker compose up`.
+- `npm run dev -w @citas/web` levanta el frontend en `http://localhost:5173` (copiar antes `apps/web/.env.example` a `.env`).
 <!-- Actualizar esta sección con install, dev, test, lint y migraciones cuando exista el monorepo. -->
 
 ## Estructura
@@ -49,5 +50,3 @@ integrabilidad sin fuga (`docs/adr/ADR-000-vision-y-atributos.md`).
 - Plan corto antes de cambios medianos; ADR para decisiones de arquitectura, escrito por quien la implementa.
 - Pruebas después de cada cambio; nunca declarar terminado con pruebas fallando.
 - Leer este archivo antes de explorar y actualizarlo en 1-2 líneas cuando cambie la estructura o aparezca un gotcha.
-
-- `npm run dev -w @citas/web` levanta el frontend en `http://localhost:5173` (copiar antes `apps/web/.env.example` a `.env`).

@@ -36,10 +36,10 @@ La imagen exportada está en `docs/contenedores.png`.
 
 ## Cómo arrancar el frontend
 
-Requiere como minimo Node 20.19 .
+Requiere Node 20.19 o superior.
 
     npm install
     cp apps/web/.env.example apps/web/.env
     npm run dev -w @citas/web
 
-coloque <http://localhost:5173>. El selector de usuario semilla de la barra superior solo aparece en desarrollo; el login real llega con IDN-2. La URL del núcleo sale de `VITE_API_URL` 
+Abre <http://localhost:5173>. El selector de usuario semilla de la barra superior solo aparece en desarrollo; el login real llega con IDN-2. La URL del núcleo sale de `VITE_API_URL`.
