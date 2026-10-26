@@ -19,6 +19,8 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
 - Núcleo, con `cp .env.example .env` y `docker compose up -d postgres-core`: `npm run db:deploy -w @grupo4/core`,
   `npm run db:seed -w @grupo4/core`, `npm run start:dev -w @grupo4/core`, `npm run test:e2e -w @grupo4/core`.
 - `docker compose up` solo levanta bases, RabbitMQ y Mailpit; el núcleo aún no tiene Dockerfile (INT-1).
+- `npm run build -w @citas/eventos` compila el paquete a `dist/` (las apps lo cargan desde ahí); `npm test -w
+  @citas/eventos` corre sus pruebas, y la de mensaje repetido necesita `docker compose up`.
 
 ## Estructura
 - `docs/vision.md`: supuestos A-01 y A-02, actores, funciones, EC-01 y EC-02, monolito vs. distribuido.
