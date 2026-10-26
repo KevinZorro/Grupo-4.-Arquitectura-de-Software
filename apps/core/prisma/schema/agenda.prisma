@@ -1,0 +1,40 @@
+// Agenda module. Only code under src/agenda may query these tables, and no model in another file
+// may declare a relation to them: refer to them by id and read them through the services that
+// src/agenda/index.ts exports. The architecture test checks both rules.
+
+model Sede {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  nombre    String   @unique
+  ciudad    String
+  direccion String
+  activa    Boolean  @default(true)
+  creadoEn  DateTime @default(now()) @map("creado_en") @db.Timestamptz(3)
+
+  @@map("sede")
+}
+
+model Especialidad {
+  id       String   @id @default(uuid(7)) @db.Uuid
+  nombre   String   @unique
+  activa   Boolean  @default(true)
+  creadoEn DateTime @default(now()) @map("creado_en") @db.Timestamptz(3)
+
+  profesionales Profesional[]
+
+  @@map("especialidad")
+}
+
+model Profesional {
+  id                  String   @id @default(uuid(7)) @db.Uuid
+  nombres             String
+  apellidos           String
+  registroProfesional String   @unique @map("registro_profesional")
+  especialidadId      String   @map("especialidad_id") @db.Uuid
+  activo              Boolean  @default(true)
+  creadoEn            DateTime @default(now()) @map("creado_en") @db.Timestamptz(3)
+
+  especialidad Especialidad @relation(fields: [especialidadId], references: [id])
+
+  @@index([especialidadId])
+  @@map("profesional")
+}

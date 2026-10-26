@@ -1,0 +1,56 @@
+// Identity module. Only code under src/identidad may query these tables, and no model in another
+// file may declare a relation to them: refer to them by id and read them through the services that
+// src/identidad/index.ts exports. The architecture test checks both rules.
+
+enum Rol {
+  PACIENTE
+  PROFESIONAL
+  ADMINISTRATIVO
+  AUDITOR
+
+  @@map("rol")
+}
+
+enum TipoDocumento {
+  CC // cédula de ciudadanía
+  TI // tarjeta de identidad
+  CE // cédula de extranjería
+  RC // registro civil
+  PA // pasaporte
+
+  @@map("tipo_documento")
+}
+
+model Paciente {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  tipoDocumento   TipoDocumento @map("tipo_documento")
+  numeroDocumento String        @map("numero_documento")
+  nombres         String
+  apellidos       String
+  fechaNacimiento DateTime      @map("fecha_nacimiento") @db.Date
+  creadoEn        DateTime      @default(now()) @map("creado_en") @db.Timestamptz(3)
+
+  usuario Usuario?
+
+  @@unique([tipoDocumento, numeroDocumento])
+  @@map("paciente")
+}
+
+model Usuario {
+  id     String  @id @default(uuid(7)) @db.Uuid
+  // Stored in lowercase: whoever looks a user up lowercases the input first.
+  correo String  @unique
+  nombre String
+  rol    Rol
+  activo Boolean @default(true)
+
+  pacienteId    String?  @unique @map("paciente_id") @db.Uuid
+  // A plain id on purpose: Profesional belongs to the agenda module, so there is no relation to it.
+  profesionalId String?  @unique @map("profesional_id") @db.Uuid
+  creadoEn      DateTime @default(now()) @map("creado_en") @db.Timestamptz(3)
+
+  // Restrict: a patient with a user cannot be deleted by accident (no physical deletes, RNF-11).
+  paciente Paciente? @relation(fields: [pacienteId], references: [id], onDelete: Restrict)
+
+  @@map("usuario")
+}
