@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "outDir": "dist",
     "noEmit": true
   },
   "include": ["apps/**/*.ts", "packages/**/*.ts"],
-  "exclude": ["node_modules", "dist", "apps/web"]
+  "exclude": ["**/node_modules", "**/dist", "apps/web"]
 }
