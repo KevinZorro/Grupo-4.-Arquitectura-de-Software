@@ -1,7 +1,7 @@
 # Núcleo asistencial (`apps/core`)
 
 Monolito modular NestJS con los módulos agenda, pagos, historia, autorización e identidad, sobre PostgreSQL con
-Prisma. El paquete es `@grupo4/core`. El plan (§7.5) lo llama `apps/nucleo`; el directorio real es `apps/core`.
+Prisma. El paquete es `@citas/core`. El plan (§7.5) lo llama `apps/nucleo`; el directorio real es `apps/core`.
 
 ## Arrancar
 
@@ -11,9 +11,9 @@ Requisitos: Node 22.12 o superior y Docker (solo para PostgreSQL).
 npm install                          # en la raíz; el postinstall genera el cliente de Prisma
 cp .env.example .env                 # ya trae NODE_ENV=development y la URL de la base
 docker compose up -d postgres-core
-npm run db:deploy -w @grupo4/core    # aplica las migraciones
-npm run db:seed -w @grupo4/core      # 12 sedes y datos ficticios; se puede repetir sin duplicar
-npm run start:dev -w @grupo4/core    # http://localhost:3000
+npm run db:deploy -w @citas/core     # aplica las migraciones
+npm run db:seed -w @citas/core       # 12 sedes y datos ficticios; se puede repetir sin duplicar
+npm run start:dev -w @citas/core     # http://localhost:3000
 ```
 
 - `GET /health` responde `{ "estado": "ok", "base": "ok" }`. Si la base no contesta en 2 s responde 503 con
@@ -98,12 +98,12 @@ Implementan lo que dice la visión (§6) y el RNF-12: ningún módulo consulta l
 **Un modelo o una columna nueva.** Edite el `.prisma` de su módulo y corra:
 
 ```bash
-npm run db:migrate -w @grupo4/core -- --name agenda_franja   # crea y aplica la migración
-npm run db:generate -w @grupo4/core                          # Prisma 7 no regenera el cliente al migrar
+npm run db:migrate -w @citas/core -- --name agenda_franja   # crea y aplica la migración
+npm run db:generate -w @citas/core                          # Prisma 7 no regenera el cliente al migrar
 ```
 
 Para SQL propio (un índice parcial, un trigger) use `-- --create-only`, edite el `migration.sql` y vuelva a correr
-`db:migrate`. Prisma no genera migraciones inversas: en desarrollo `npm run db:reset -w @grupo4/core` borra los datos
+`db:migrate`. Prisma no genera migraciones inversas: en desarrollo `npm run db:reset -w @citas/core` borra los datos
 de la base y reaplica las migraciones, y después se vuelve a sembrar con `db:seed`; en producción se restaura una copia.
 Dos personas pueden crear migraciones a la vez: tras fusionar `main`, corra `db:migrate` y confirme que no pide otra.
 
@@ -129,7 +129,7 @@ Swagger toma el esquema del cuerpo de ahí mismo. Un dato inválido responde 400
 
 ```bash
 npm test                           # raíz: unitarias y prueba de arquitectura; no necesitan base
-npm run test:e2e -w @grupo4/core   # contra PostgreSQL real; aplica las migraciones pendientes antes de empezar
+npm run test:e2e -w @citas/core    # contra PostgreSQL real; aplica las migraciones pendientes antes de empezar
 ```
 
 Las e2e levantan la app como corre en desarrollo, en pruebas y en producción, comprueban la cabecera en cada uno y

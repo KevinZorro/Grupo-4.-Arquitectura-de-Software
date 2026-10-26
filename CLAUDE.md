@@ -16,8 +16,8 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
 
 ## Comandos
 - Raíz: `npm install` (el postinstall genera el cliente de Prisma), `npm run build` (tsc), `npm run lint`, `npm test`.
-- Núcleo, con `cp .env.example .env` y `docker compose up -d postgres-core`: `npm run db:deploy -w @grupo4/core`,
-  `npm run db:seed -w @grupo4/core`, `npm run start:dev -w @grupo4/core`, `npm run test:e2e -w @grupo4/core`.
+- Núcleo, con `cp .env.example .env` y `docker compose up -d postgres-core`: `npm run db:deploy -w @citas/core`,
+  `npm run db:seed -w @citas/core`, `npm run start:dev -w @citas/core`, `npm run test:e2e -w @citas/core`.
 - `docker compose up` solo levanta bases, RabbitMQ y Mailpit; el núcleo aún no tiene Dockerfile (INT-1).
 - `npm run build -w @citas/eventos` compila el paquete a `dist/` (las apps lo cargan desde ahí); `npm test -w
   @citas/eventos` corre sus pruebas, y la de mensaje repetido necesita `docker compose up`.
@@ -45,7 +45,7 @@ integrabilidad sin fuga (`docs/adr/ADR-000-vision-y-atributos.md`).
 - Núcleo: ningún módulo toca tablas ajenas ni entra a otro sin su `index.ts` (lo exige `apps/core/test/arquitectura`).
   Toda ruta niega por defecto salvo `@Publico()`; en desarrollo se entra con `X-Usuario-Dev: <correo semilla>`.
 - Versiones fijas: `npm i prisma` sin versión instala la 8.0 RC (etiqueta `latest`), TypeScript 7 rompe `nest build` y
-  hace falta Node 22.12 o más. Prisma 7 no regenera el cliente al migrar (`npm run db:generate -w @grupo4/core`) y
+  hace falta Node 22.12 o más. Prisma 7 no regenera el cliente al migrar (`npm run db:generate -w @citas/core`) y
   bloquea `migrate reset` si lo lanza un agente: pedir permiso al usuario, no forzarlo.
 - Tareas con ID del plan (`AGE-3`, `PAG-2`...); ramas `feat/<id>-<tema>`; el PR lleva `Closes #<issue>`.
 - Fechas límite en `docs/seguimiento/fechas-limite.json`; `.github/workflows/seguimiento-fechas.yml` publica la matriz en la rama `seguimiento`. Al agregar tareas de otro sprint, agregarlas a ese JSON.
