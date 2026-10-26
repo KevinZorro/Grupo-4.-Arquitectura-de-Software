@@ -75,6 +75,11 @@ export class RepositorioTransacciones {
     return idTransaccion ? this.porId.get(idTransaccion) : undefined;
   }
 
+  /** Más recientes primero, para el panel de desarrollo. */
+  listar(): Transaccion[] {
+    return [...this.porId.values()].sort((a, b) => b.creadaEn.localeCompare(a.creadaEn));
+  }
+
   resolver(idTransaccion: string, estado: EstadoResuelto): ResultadoResolucion | undefined {
     const transaccion = this.porId.get(idTransaccion);
     if (!transaccion) {

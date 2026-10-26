@@ -1,31 +1,17 @@
+import { escapar, formatearMonto } from './html';
 import type { Transaccion } from './transacciones';
 
-const formatoCop = new Intl.NumberFormat('es-CO', {
-  style: 'currency',
-  currency: 'COP',
-  maximumFractionDigits: 0,
-});
-
-const TEXTO_ESTADO: Record<Transaccion['estado'], string> = {
+export const TEXTO_ESTADO: Record<Transaccion['estado'], string> = {
   PENDIENTE: 'Pendiente de pago',
   APROBADA: 'Pago aprobado',
   RECHAZADA: 'Pago rechazado',
 };
 
-const CLASE_ESTADO: Record<Transaccion['estado'], string> = {
+export const CLASE_ESTADO: Record<Transaccion['estado'], string> = {
   PENDIENTE: 'pendiente',
   APROBADA: 'aprobada',
   RECHAZADA: 'rechazada',
 };
-
-function escapar(texto: string): string {
-  return texto
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
 
 /**
  * Página del simulador. HTML plano con formularios nativos: sin build, sin
@@ -112,7 +98,7 @@ export function renderPagina(transaccion: Transaccion): string {
   <body>
     <main>
       <h1>Pasarela de pagos simulada</h1>
-      <div class="monto">${escapar(formatoCop.format(transaccion.monto))}</div>
+      <div class="monto">${escapar(formatearMonto(transaccion.monto))}</div>
       <div class="referencia">Ref. ${escapar(transaccion.referencia)}</div>
       <span class="estado ${CLASE_ESTADO[transaccion.estado]}">${TEXTO_ESTADO[transaccion.estado]}</span>
       ${acciones}
