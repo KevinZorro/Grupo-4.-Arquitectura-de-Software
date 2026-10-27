@@ -35,5 +35,7 @@ export default async function setup(): Promise<void> {
     cwd: APP_DIR,
     env: process.env,
     stdio: 'pipe',
+    // On Windows npx is a .cmd script, which only a shell can launch.
+    shell: process.platform === 'win32',
   });
 }
