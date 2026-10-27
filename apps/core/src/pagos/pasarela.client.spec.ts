@@ -1,3 +1,5 @@
+import { createServer } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { describe, expect, it, vi } from 'vitest';
 import { PasarelaClient } from './pasarela.client';
 
@@ -66,6 +68,28 @@ describe('PasarelaClient', () => {
     await expect(
       crearCliente(fetch, 10).crearTransaccion({ referencia: 'cita-1', monto: 50_000 }),
     ).rejects.toMatchObject({ name: 'PasarelaError', causa: 'timeout' });
+  });
+
+  it('corta una pasarela lenta real al vencer el plazo', async () => {
+    const servidor = createServer(() => {
+      // Deliberadamente no responde: el cliente debe abortar la conexión.
+    });
+    await new Promise<void>((listo) => servidor.listen(0, '127.0.0.1', listo));
+    const { port } = servidor.address() as AddressInfo;
+
+    try {
+      const cliente = new PasarelaClient({
+        baseUrl: `http://127.0.0.1:${port}`,
+        timeoutMs: 20,
+      });
+
+      await expect(
+        cliente.crearTransaccion({ referencia: 'cita-1', monto: 50_000 }),
+      ).rejects.toMatchObject({ name: 'PasarelaError', causa: 'timeout' });
+    } finally {
+      servidor.closeAllConnections();
+      await new Promise<void>((listo) => servidor.close(() => listo()));
+    }
   });
 
   it('distingue una falla de conexión de un timeout', async () => {
