@@ -35,5 +35,7 @@ export default async function setup(): Promise<void> {
     cwd: APP_DIR,
     env: process.env,
     stdio: 'pipe',
+    // On Windows npx is npx.cmd, which execFileSync only finds through a shell.
+    shell: process.platform === 'win32',
   });
 }

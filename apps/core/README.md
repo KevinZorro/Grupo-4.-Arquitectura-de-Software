@@ -32,6 +32,11 @@ mensajes no repiten los valores recibidos, porque la URL de la base lleva una co
 | `CORE_DATABASE_URL` | sí          | URL `postgresql://` de la base del núcleo                        |
 | `PORT`              | no          | Puerto HTTP. Por defecto 3000                                    |
 | `CORS_ORIGINS`      | no          | Orígenes del navegador separados por comas. Vacío desactiva CORS |
+| `RABBITMQ_URL`      | sí          | URL `amqp://` del broker al que sale la bandeja de salida        |
+
+Sin RabbitMQ el núcleo arranca igual: los eventos quedan pendientes en `evento_saliente` y salen, en orden, cuando el
+broker vuelve. Los módulos los guardan con `BandejaSalidaService.encolar(tx, { clave, datos })` dentro de la misma
+transacción que cambia el estado de la cita (EVT-3).
 
 ## Identificarse en desarrollo
 

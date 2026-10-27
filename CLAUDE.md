@@ -18,6 +18,7 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
 - Raíz: `npm install` (el postinstall genera el cliente de Prisma), `npm run build` (tsc), `npm run lint`, `npm test`.
 - Núcleo, con `cp .env.example .env` y `docker compose up -d postgres-core`: `npm run db:deploy -w @citas/core`,
   `npm run db:seed -w @citas/core`, `npm run start:dev -w @citas/core`, `npm run test:e2e -w @citas/core`.
+  El núcleo exige `RABBITMQ_URL`, y `test:e2e` necesita también `docker compose up -d rabbitmq`.
 - `docker compose up` solo levanta bases, RabbitMQ y Mailpit; el núcleo aún no tiene Dockerfile (INT-1).
 - `npm run build -w @citas/eventos` compila el paquete a `dist/` (las apps lo cargan desde ahí); `npm test -w
   @citas/eventos` corre sus pruebas, y la de mensaje repetido necesita `docker compose up`.
@@ -32,6 +33,8 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
 - Código propuesto: `apps/<aplicación>` y `packages/eventos` (plan §7.5).
 - `apps/core/`: núcleo NestJS (el plan lo llama `apps/nucleo`). Un módulo por dominio en `src/<módulo>/` y sus modelos en
   `prisma/schema/<módulo>.prisma`. Guía, usuarios semilla y recetas en `apps/core/README.md`.
+- `apps/core/src/bandeja-salida/`: bandeja de salida (infraestructura, tabla `evento_saliente`). Los módulos guardan
+  eventos con `BandejaSalidaService.encolar(tx, { clave, datos })` y el publicador los envía a RabbitMQ.
 
 ## Arquitectura
 Monolito modular (agenda, pagos, historia, autorización, identidad) en el que ningún módulo consulta las tablas de
