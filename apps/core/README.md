@@ -26,12 +26,14 @@ npm run start:dev -w @citas/core     # http://localhost:3000
 Se validan con zod al arrancar. Si falta una o no es válida, el proceso imprime cuáles y termina con código 1. Los
 mensajes no repiten los valores recibidos, porque la URL de la base lleva una contraseña.
 
-| Variable            | Obligatoria | Qué es                                                           |
-| ------------------- | ----------- | ---------------------------------------------------------------- |
-| `NODE_ENV`          | sí          | `development`, `test` o `production`. No tiene valor por defecto |
-| `CORE_DATABASE_URL` | sí          | URL `postgresql://` de la base del núcleo                        |
-| `PORT`              | no          | Puerto HTTP. Por defecto 3000                                    |
-| `CORS_ORIGINS`      | no          | Orígenes del navegador separados por comas. Vacío desactiva CORS |
+| Variable            | Obligatoria | Qué es                                                                        |
+| ------------------- | ----------- | ----------------------------------------------------------------------------- |
+| `NODE_ENV`          | sí          | `development`, `test` o `production`. No tiene valor por defecto              |
+| `CORE_DATABASE_URL` | sí          | URL `postgresql://` de la base del núcleo                                     |
+| `PORT`              | no          | Puerto HTTP. Por defecto 3000                                                 |
+| `CORS_ORIGINS`      | no          | Orígenes del navegador separados por comas. Vacío desactiva CORS              |
+| `PASARELA_URL`      | no          | URL `http(s)://` de la pasarela simulada. Por defecto `http://localhost:4000` |
+| `PAGOS_TIMEOUT_MS`  | no          | Timeout de la creación de la transacción. Por defecto 5000 ms                 |
 
 ## Identificarse en desarrollo
 
@@ -75,7 +77,7 @@ En un controlador, `@UsuarioActual()` entrega a quien llama (`id`, `correo`, `no
 | ------------ | ------------------ | ------------------------------------- | ------------------------------------- | -------------------------- |
 | agenda       | `src/agenda`       | `agenda.prisma`                       | `sede`, `especialidad`, `profesional` | AGE-1 agrega franja y cita |
 | identidad    | `src/identidad`    | `identidad.prisma`                    | `usuario`, `paciente`                 | IDN-*                      |
-| pagos        | `src/pagos`        | `pagos.prisma` (aún no existe)        | —                                     | PAG-*                      |
+| pagos        | `src/pagos`        | `pagos.prisma`                        | `transaccion_pago`                    | PAG-*                      |
 | historia     | `src/historia`     | `historia.prisma` (aún no existe)     | —                                     | HCL-*                      |
 | autorizacion | `src/autorizacion` | `autorizacion.prisma` (aún no existe) | —                                     | AUT-*                      |
 
