@@ -71,6 +71,11 @@ En un controlador, `@UsuarioActual()` entrega a quien llama (`id`, `correo`, `no
 
 ## Agenda
 
+| Ruta                     | Qué hace                                                                                                                             |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /api/v1/franjas`    | Franjas libres y futuras. Filtros: `especialidadId`, `sedeId`, `profesionalId`, `modalidad`, `fecha` (`AAAA-MM-DD`, día de Colombia) |
+| `GET /api/v1/citas/mias` | Citas del paciente que llama, con su estado. Otro rol recibe 403                                                                     |
+
 - Estados y transiciones en `src/agenda/estado-cita.ts`; una transición inválida lanza `TransicionDeCitaInvalidaError`.
 - Una franja admite una sola cita que no esté `CANCELADA`: lo garantiza el índice único parcial `cita_franja_activa_key`
   de la migración, no el código.
