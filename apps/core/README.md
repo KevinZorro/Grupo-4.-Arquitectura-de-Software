@@ -34,7 +34,7 @@ mensajes no repiten los valores recibidos, porque la URL de la base lleva una co
 | `CORS_ORIGINS`      | no          | Orígenes del navegador separados por comas. Vacío desactiva CORS              |
 | `RABBITMQ_URL`      | sí          | URL `amqp://` del broker al que sale la bandeja de salida                     |
 | `PASARELA_URL`      | no          | URL `http(s)://` de la pasarela simulada. Por defecto `http://localhost:4000` |
-| `PAGOS_TIMEOUT_MS`  | no          | Timeout de la creación de la transacción. Por defecto 5000 ms                 |
+| `PAGOS_TIMEOUT_MS`  | no          | Timeout de la creación de la transacción. Por defecto y máximo 5000 ms        |
 
 Sin RabbitMQ el núcleo arranca igual: los eventos quedan pendientes en `evento_saliente` y salen, en orden, cuando el
 broker vuelve. Los módulos los guardan con `BandejaSalidaService.encolar(tx, { clave, datos })` dentro de la misma
