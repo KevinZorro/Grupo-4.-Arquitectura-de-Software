@@ -33,6 +33,18 @@ export const envSchema = z.object({
     error: 'es obligatoria y debe ser una URL postgresql://',
   }),
   CORS_ORIGINS: corsOrigins,
+  PASARELA_URL: z
+    .url({
+      protocol: /^https?$/,
+      error: 'debe ser una URL http(s):// de la pasarela',
+    })
+    .default('http://localhost:4000'),
+  PAGOS_TIMEOUT_MS: z.coerce
+    .number({ error: 'debe ser un número' })
+    .int('debe ser un entero')
+    .positive('debe ser mayor que cero')
+    .max(60_000, 'debe ser 60000 o menos')
+    .default(5_000),
 });
 
 export type Env = z.infer<typeof envSchema>;

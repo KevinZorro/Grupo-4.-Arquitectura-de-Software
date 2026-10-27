@@ -18,7 +18,13 @@ function messageOf(raw: Record<string, unknown>): string {
 
 describe('parseEnv', () => {
   it('accepts the minimal environment and fills the defaults', () => {
-    expect(parseEnv(VALID)).toEqual({ ...VALID, PORT: 3000, CORS_ORIGINS: [] });
+    expect(parseEnv(VALID)).toEqual({
+      ...VALID,
+      PORT: 3000,
+      CORS_ORIGINS: [],
+      PASARELA_URL: 'http://localhost:4000',
+      PAGOS_TIMEOUT_MS: 5_000,
+    });
   });
 
   it('coerces PORT from text', () => {
@@ -57,6 +63,18 @@ describe('parseEnv', () => {
       expect(messageOf({ ...VALID, CORE_DATABASE_URL: url })).toContain('CORE_DATABASE_URL');
     },
   );
+
+  it('coerces PAGOS_TIMEOUT_MS from text', () => {
+    expect(parseEnv({ ...VALID, PAGOS_TIMEOUT_MS: '7500' }).PAGOS_TIMEOUT_MS).toBe(7_500);
+  });
+
+  it.each(['0', '-1', '80.5', 'abc', ''])('rejects PAGOS_TIMEOUT_MS=%j', (timeout) => {
+    expect(messageOf({ ...VALID, PAGOS_TIMEOUT_MS: timeout })).toContain('PAGOS_TIMEOUT_MS');
+  });
+
+  it.each(['localhost:4000', 'ftp://localhost:4000', ''])('rejects PASARELA_URL=%j', (url) => {
+    expect(messageOf({ ...VALID, PASARELA_URL: url })).toContain('PASARELA_URL');
+  });
 
   it('never echoes the received values, which may hold a password', () => {
     const message = messageOf({ ...VALID, CORE_DATABASE_URL: 'mysql://core:ClaveSecreta@db/x' });
