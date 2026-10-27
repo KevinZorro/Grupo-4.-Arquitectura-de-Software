@@ -1,17 +1,17 @@
 # Matriz de cumplimiento de fechas límite
 
-Generada el 2026-10-26 17:16:06 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
+Generada el 2026-10-27 05:22:01 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
 
 ## Resumen por persona
 
 | Responsable | Tareas | A tiempo | Cerradas tarde | Vencidas | Pendientes | Horas | Horas en riesgo |
 |---|---|---|---|---|---|---|---|
 | Wilhen Gutiérrez | 3 | 0 | 0 | 0 | 3 | 7 | 0 |
-| Angel Montañez | 3 | 0 | 0 | 0 | 3 | 7 | 0 |
+| Angel Montañez | 3 | 0 | 0 | 1 | 2 | 7 | 2 |
 | Nefer Rojas | 3 | 1 | 0 | 0 | 2 | 7 | 0 |
 | Javier Rincón | 3 | 2 | 0 | 0 | 1 | 7 | 0 |
 | Kevin Zorro | 2 | 1 | 0 | 0 | 1 | 7 | 0 |
-| Juan Camilo Uribe | 3 | 0 | 0 | 0 | 3 | 7 | 0 |
+| Juan Camilo Uribe | 3 | 0 | 0 | 1 | 2 | 7 | 3 |
 
 ## Detalle por tarea
 
@@ -20,8 +20,8 @@ Generada el 2026-10-26 17:16:06 (America/Bogota). Una tarea cuenta a tiempo si s
 | FUN-1 | [#11](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/11) | Javier Rincón | 2026-10-25 | A tiempo | 2026-10-24 | 0 | 2 |
 | FUN-2 | [#12](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/12) | Javier Rincón | 2026-10-25 | A tiempo | 2026-10-24 | 0 | 3 |
 | FUN-3 | [#13](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/13) | Kevin Zorro | 2026-10-26 | A tiempo | 2026-10-26 | 0 | 5 |
-| FUN-4 | [#14](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/14) | Juan Camilo Uribe | 2026-10-26 | Pendiente | — | 0 | 3 |
-| PAG-1 | [#15](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/15) | Angel Montañez | 2026-10-26 | Pendiente | — | 0 | 2 |
+| FUN-4 | [#14](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/14) | Juan Camilo Uribe | 2026-10-26 | Vencida | — | 1 | 3 |
+| PAG-1 | [#15](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/15) | Angel Montañez | 2026-10-26 | Vencida | — | 1 | 2 |
 | EVT-1 | [#16](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/16) | Nefer Rojas | 2026-10-27 | A tiempo | 2026-10-26 | 0 | 4 |
 | AGE-1 | [#17](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/17) | Wilhen Gutiérrez | 2026-10-27 | Pendiente | — | 0 | 2 |
 | AGE-2 | [#18](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/18) | Wilhen Gutiérrez | 2026-10-27 | Pendiente | — | 0 | 2 |
