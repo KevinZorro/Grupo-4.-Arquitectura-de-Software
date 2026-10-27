@@ -3,6 +3,7 @@ import { CitasController } from './citas.controller';
 import { CitasService } from './citas.service';
 import { FranjasController } from './franjas.controller';
 import { FranjasService } from './franjas.service';
+import { BANDEJA_SALIDA, BandejaSinPublicador, INICIADOR_PAGO, PagoSinPasarela } from './puertos';
 
 /**
  * Scheduling: sedes, especialidades, profesionales, franjas and citas (tasks AGE-*).
@@ -11,6 +12,12 @@ import { FranjasService } from './franjas.service';
  */
 @Module({
   controllers: [FranjasController, CitasController],
-  providers: [FranjasService, CitasService],
+  providers: [
+    FranjasService,
+    CitasService,
+    // PAG-2 and EVT-3 swap these stand-ins for the real adapters (see puertos.ts).
+    { provide: INICIADOR_PAGO, useClass: PagoSinPasarela },
+    { provide: BANDEJA_SALIDA, useClass: BandejaSinPublicador },
+  ],
 })
 export class AgendaModule {}
