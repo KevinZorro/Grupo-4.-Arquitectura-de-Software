@@ -69,15 +69,23 @@ legibles, `00000000-0000-4000-80KK-NNNNNNNNNNNN`, donde `KK` es el tipo (01 sede
 En un controlador, `@UsuarioActual()` entrega a quien llama (`id`, `correo`, `nombre`, `rol`, `pacienteId`,
 `profesionalId`). Cuando llegue el JWT cambia la guarda y estos dos decoradores siguen igual.
 
+## Agenda
+
+- Estados y transiciones en `src/agenda/estado-cita.ts`; una transición inválida lanza `TransicionDeCitaInvalidaError`.
+- Una franja admite una sola cita que no esté `CANCELADA`: lo garantiza el índice único parcial `cita_franja_activa_key`
+  de la migración, no el código.
+- La semilla crea franjas de lunes a viernes de las dos próximas semanas: 8:00 y 8:30 presenciales y 10:00 y 10:30
+  virtuales, hora de Colombia, guardadas en UTC. Repetirla solo agrega los días que falten.
+
 ## Módulos y tablas
 
-| Módulo       | Carpeta            | Esquema                               | Tablas                                | Tareas                     |
-| ------------ | ------------------ | ------------------------------------- | ------------------------------------- | -------------------------- |
-| agenda       | `src/agenda`       | `agenda.prisma`                       | `sede`, `especialidad`, `profesional` | AGE-1 agrega franja y cita |
-| identidad    | `src/identidad`    | `identidad.prisma`                    | `usuario`, `paciente`                 | IDN-*                      |
-| pagos        | `src/pagos`        | `pagos.prisma` (aún no existe)        | —                                     | PAG-*                      |
-| historia     | `src/historia`     | `historia.prisma` (aún no existe)     | —                                     | HCL-*                      |
-| autorizacion | `src/autorizacion` | `autorizacion.prisma` (aún no existe) | —                                     | AUT-*                      |
+| Módulo       | Carpeta            | Esquema                               | Tablas                                                  | Tareas |
+| ------------ | ------------------ | ------------------------------------- | ------------------------------------------------------- | ------ |
+| agenda       | `src/agenda`       | `agenda.prisma`                       | `sede`, `especialidad`, `profesional`, `franja`, `cita` | AGE-*  |
+| identidad    | `src/identidad`    | `identidad.prisma`                    | `usuario`, `paciente`                                   | IDN-*  |
+| pagos        | `src/pagos`        | `pagos.prisma` (aún no existe)        | —                                                       | PAG-*  |
+| historia     | `src/historia`     | `historia.prisma` (aún no existe)     | —                                                       | HCL-*  |
+| autorizacion | `src/autorizacion` | `autorizacion.prisma` (aún no existe) | —                                                       | AUT-*  |
 
 `src/config`, `src/prisma`, `src/health` y `src/generated` no son módulos de dominio: sirven a todos.
 
@@ -153,5 +161,4 @@ levantarla.
 
 - Dockerfile y servicio `core` en `docker-compose.yml`: hoy el compose solo levanta las bases, RabbitMQ y Mailpit, y el
   núcleo corre con `npm run start:dev`. Encaja en INT-1.
-- Franjas y citas con su semilla (AGE-1), bandeja de salida (EVT-3), login con JWT (IDN-1) y autorización por vínculo
-  (AUT-*).
+- Bandeja de salida (EVT-3), login con JWT (IDN-1) y autorización por vínculo (AUT-*).

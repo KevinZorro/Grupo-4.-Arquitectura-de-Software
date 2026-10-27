@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { ESPECIALIDADES, PROFESIONALES, SEDES } from './agenda';
+import { ESPECIALIDADES, franjasDeLaSemilla, PROFESIONALES, SEDES } from './agenda';
 import { assertSeedAllowed } from './entorno';
 import { forUpdate, seedId } from './ids';
 import { DOMINIO_FICTICIO, PACIENTES, USUARIOS } from './identidad';
@@ -104,5 +104,57 @@ describe('seed data', () => {
       );
       expect(isUnique(linked)).toBe(true);
     });
+  });
+});
+
+describe('franjasDeLaSemilla', () => {
+  // A Friday evening in Colombia, already Saturday in UTC: the agenda must still start on Saturday's
+  // Colombian date and skip that weekend.
+  const HOY = new Date('2026-10-31T02:00:00.000Z');
+  const franjas = franjasDeLaSemilla(HOY);
+
+  it('covers the weekdays of the next two weeks, starting tomorrow', () => {
+    const dias = new Set(franjas.map((f) => new Date(f.iniciaEn).toISOString().slice(0, 10)));
+
+    expect([...dias].sort()).toEqual([
+      '2026-11-02',
+      '2026-11-03',
+      '2026-11-04',
+      '2026-11-05',
+      '2026-11-06',
+      '2026-11-09',
+      '2026-11-10',
+      '2026-11-11',
+      '2026-11-12',
+      '2026-11-13',
+    ]);
+  });
+
+  it('stores the Colombian 8:00 a.m. as 13:00 UTC and lasts 30 minutes', () => {
+    const primera = franjas[0];
+
+    expect(new Date(primera.iniciaEn).toISOString()).toBe('2026-11-02T13:00:00.000Z');
+    expect(new Date(primera.terminaEn).getTime() - new Date(primera.iniciaEn).getTime()).toBe(
+      30 * 60_000,
+    );
+  });
+
+  it('never repeats a profesional at the same start, so the seed can run again', () => {
+    expect(isUnique(franjas.map((f) => `${f.profesionalId}@${String(f.iniciaEn)}`))).toBe(true);
+  });
+
+  it('offers both modalidades for every especialidad, at real sedes', () => {
+    const sedeIds = new Set(ids(SEDES));
+    const especialidadDe = new Map(PROFESIONALES.map((p) => [p.id, p.especialidadId]));
+
+    expect(franjas.every((f) => sedeIds.has(f.sedeId))).toBe(true);
+    for (const modalidad of ['PRESENCIAL', 'VIRTUAL']) {
+      const cubiertas = new Set(
+        franjas
+          .filter((f) => f.modalidad === modalidad)
+          .map((f) => especialidadDe.get(f.profesionalId)),
+      );
+      expect(cubiertas.size).toBe(ESPECIALIDADES.length);
+    }
   });
 });

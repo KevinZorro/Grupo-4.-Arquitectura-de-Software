@@ -10,6 +10,8 @@ model Sede {
   activa    Boolean  @default(true)
   creadoEn  DateTime @default(now()) @map("creado_en") @db.Timestamptz(3)
 
+  franjas Franja[]
+
   @@map("sede")
 }
 
@@ -34,7 +36,64 @@ model Profesional {
   creadoEn            DateTime @default(now()) @map("creado_en") @db.Timestamptz(3)
 
   especialidad Especialidad @relation(fields: [especialidadId], references: [id])
+  franjas      Franja[]
 
   @@index([especialidadId])
   @@map("profesional")
+}
+
+enum Modalidad {
+  VIRTUAL
+  PRESENCIAL
+
+  @@map("modalidad")
+}
+
+// Allowed transitions live in src/agenda/estado-cita.ts.
+enum EstadoCita {
+  PENDIENTE_PAGO
+  CONFIRMADA
+  CANCELADA
+
+  @@map("estado_cita")
+}
+
+model Franja {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  profesionalId String    @map("profesional_id") @db.Uuid
+  sedeId        String    @map("sede_id") @db.Uuid
+  modalidad     Modalidad
+  iniciaEn      DateTime  @map("inicia_en") @db.Timestamptz(3)
+  terminaEn     DateTime  @map("termina_en") @db.Timestamptz(3)
+  creadoEn      DateTime  @default(now()) @map("creado_en") @db.Timestamptz(3)
+
+  profesional Profesional @relation(fields: [profesionalId], references: [id])
+  sede        Sede        @relation(fields: [sedeId], references: [id])
+  citas       Cita[]
+
+  @@unique([profesionalId, iniciaEn])
+  @@index([iniciaEn])
+  @@map("franja")
+}
+
+// The migration adds a partial unique index on franja_id where estado <> 'CANCELADA': a franja
+// holds at most one live cita. Prisma cannot declare it, so it lives only in the SQL.
+model Cita {
+  id                String     @id @default(uuid(7)) @db.Uuid
+  franjaId          String     @map("franja_id") @db.Uuid
+  // A plain id on purpose: Paciente belongs to the identity module, so there is no relation to it.
+  pacienteId        String     @map("paciente_id") @db.Uuid
+  estado            EstadoCita
+  // Set while the cita waits for its payment (PENDIENTE_PAGO); the slot is held until then.
+  bloqueoVenceEn    DateTime?  @map("bloqueo_vence_en") @db.Timestamptz(3)
+  claveIdempotencia String     @map("clave_idempotencia")
+  creadoEn          DateTime   @default(now()) @map("creado_en") @db.Timestamptz(3)
+  actualizadoEn     DateTime   @updatedAt @map("actualizado_en") @db.Timestamptz(3)
+
+  franja Franja @relation(fields: [franjaId], references: [id])
+
+  @@unique([pacienteId, claveIdempotencia])
+  @@index([pacienteId])
+  @@index([franjaId])
+  @@map("cita")
 }
