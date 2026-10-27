@@ -33,7 +33,7 @@ mensajes no repiten los valores recibidos, porque la URL de la base lleva una co
 | `PORT`              | no          | Puerto HTTP. Por defecto 3000                                                 |
 | `CORS_ORIGINS`      | no          | Orígenes del navegador separados por comas. Vacío desactiva CORS              |
 | `PASARELA_URL`      | no          | URL `http(s)://` de la pasarela simulada. Por defecto `http://localhost:4000` |
-| `PAGOS_TIMEOUT_MS`  | no          | Timeout de la creación de la transacción. Por defecto 5000 ms                 |
+| `PAGOS_TIMEOUT_MS`  | no          | Timeout de la creación de la transacción. Por defecto y máximo 5000 ms        |
 
 ## Identificarse en desarrollo
 

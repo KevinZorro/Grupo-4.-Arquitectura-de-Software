@@ -65,10 +65,10 @@ describe('parseEnv', () => {
   );
 
   it('coerces PAGOS_TIMEOUT_MS from text', () => {
-    expect(parseEnv({ ...VALID, PAGOS_TIMEOUT_MS: '7500' }).PAGOS_TIMEOUT_MS).toBe(7_500);
+    expect(parseEnv({ ...VALID, PAGOS_TIMEOUT_MS: '2500' }).PAGOS_TIMEOUT_MS).toBe(2_500);
   });
 
-  it.each(['0', '-1', '80.5', 'abc', ''])('rejects PAGOS_TIMEOUT_MS=%j', (timeout) => {
+  it.each(['0', '-1', '80.5', '5001', 'abc', ''])('rejects PAGOS_TIMEOUT_MS=%j', (timeout) => {
     expect(messageOf({ ...VALID, PAGOS_TIMEOUT_MS: timeout })).toContain('PAGOS_TIMEOUT_MS');
   });
 
