@@ -43,7 +43,7 @@ export const envSchema = z.object({
     .number({ error: 'debe ser un número' })
     .int('debe ser un entero')
     .positive('debe ser mayor que cero')
-    .max(60_000, 'debe ser 60000 o menos')
+    .max(5_000, 'debe ser 5000 o menos')
     .default(5_000),
 });
 
