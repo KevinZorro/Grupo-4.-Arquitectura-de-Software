@@ -19,6 +19,7 @@ Nefer Sneyder Rojas Porras · Kevin David Zorro Hernández · Juan Camilo Uribe 
 | `docs/plan-de-trabajo.md` · `docs/img/cronograma.png` | Plan de trabajo: RF y RNF detallados, tamaño y estimación, capacidad del equipo, cronograma del semestre y reparto por persona del avance del 30 de octubre | Kevin Zorro |
 | `docs/reunion-de-arranque.md` | Lo que se aprueba en la reunión de arranque del sprint 1: decisiones técnicas, contratos y reparto | Kevin Zorro |
 | `packages/eventos/README.md` | Uso del paquete de eventos: contratos, topología de colas, publicador y consumidor idempotente, con ejemplos para los adaptadores | Nefer Rojas |
+| `apps/core/README.md` | Núcleo asistencial: cómo arrancarlo, usuarios semilla y cabecera de desarrollo, módulos y tablas, y reglas para agregar un módulo | Kevin Zorro |
 
 ## Decisiones clave
 
@@ -33,3 +34,13 @@ Nefer Sneyder Rojas Porras · Kevin David Zorro Hernández · Juan Camilo Uribe 
 
 Abrir <https://structurizr.com/dsl>, pegar el contenido de `docs/contenedores.dsl` y presionar **Render**.
 La imagen exportada está en `docs/contenedores.png`.
+
+## Cómo arrancar el frontend
+
+Requiere Node 20.19 o superior.
+
+    npm install
+    cp apps/web/.env.example apps/web/.env
+    npm run dev -w @citas/web
+
+Abre <http://localhost:5173>. El selector de usuario semilla de la barra superior solo aparece en desarrollo; el login real llega con IDN-2. La URL del núcleo sale de `VITE_API_URL`.
