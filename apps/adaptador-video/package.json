@@ -1,0 +1,22 @@
+{
+  "name": "@citas/adaptador-video",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Adaptador de video simulado para citas virtuales",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "tsx src/main.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@citas/eventos": "0.1.0",
+    "amqplib": "^2.2.0",
+    "dotenv": "^18.0.9",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "vitest": "^5.0.5"
+  }
+}
