@@ -33,6 +33,11 @@ export const envSchema = z.object({
     error: 'es obligatoria y debe ser una URL postgresql://',
   }),
   CORS_ORIGINS: corsOrigins,
+  // The outbox publisher sends the events here (EVT-3).
+  RABBITMQ_URL: z.url({
+    protocol: /^amqps?$/,
+    error: 'es obligatoria y debe ser una URL amqp://',
+  }),
 });
 
 export type Env = z.infer<typeof envSchema>;
