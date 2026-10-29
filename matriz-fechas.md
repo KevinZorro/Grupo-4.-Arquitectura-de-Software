@@ -1,6 +1,6 @@
 # Matriz de cumplimiento de fechas límite
 
-Generada el 2026-10-29 06:25:33 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
+Generada el 2026-10-29 09:14:30 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
 
 ## Resumen por persona
 
@@ -8,7 +8,7 @@ Generada el 2026-10-29 06:25:33 (America/Bogota). Una tarea cuenta a tiempo si s
 |---|---|---|---|---|---|---|---|
 | Wilhen Gutiérrez | 3 | 0 | 0 | 3 | 0 | 7 | 7 |
 | Angel Montañez | 3 | 0 | 0 | 3 | 0 | 7 | 7 |
-| Nefer Rojas | 3 | 1 | 0 | 2 | 0 | 7 | 3 |
+| Nefer Rojas | 3 | 1 | 1 | 1 | 0 | 7 | 3 |
 | Javier Rincón | 3 | 2 | 0 | 1 | 0 | 7 | 2 |
 | Kevin Zorro | 2 | 1 | 0 | 0 | 1 | 7 | 0 |
 | Juan Camilo Uribe | 3 | 0 | 0 | 2 | 1 | 7 | 6 |
@@ -25,7 +25,7 @@ Generada el 2026-10-29 06:25:33 (America/Bogota). Una tarea cuenta a tiempo si s
 | EVT-1 | [#16](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/16) | Nefer Rojas | 2026-10-27 | A tiempo | 2026-10-26 | 0 | 4 |
 | AGE-1 | [#17](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/17) | Wilhen Gutiérrez | 2026-10-27 | Vencida | — | 2 | 2 |
 | AGE-2 | [#18](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/18) | Wilhen Gutiérrez | 2026-10-27 | Vencida | — | 2 | 2 |
-| EVT-3 | [#19](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/19) | Nefer Rojas | 2026-10-28 | Vencida | — | 1 | 1 |
+| EVT-3 | [#19](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/19) | Nefer Rojas | 2026-10-28 | Cerrada tarde | 2026-10-29 | 1 | 1 |
 | AGE-3 | [#20](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/20) | Wilhen Gutiérrez | 2026-10-28 | Vencida | — | 1 | 3 |
 | PAG-2 | [#21](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/21) | Angel Montañez | 2026-10-28 | Vencida | — | 1 | 2 |
 | PAG-3 | [#22](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/22) | Angel Montañez | 2026-10-28 | Vencida | — | 1 | 3 |
