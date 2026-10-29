@@ -69,18 +69,27 @@ legibles, `00000000-0000-4000-80KK-NNNNNNNNNNNN`, donde `KK` es el tipo (01 sede
 En un controlador, `@UsuarioActual()` entrega a quien llama (`id`, `correo`, `nombre`, `rol`, `pacienteId`,
 `profesionalId`). Cuando llegue el JWT cambia la guarda y estos dos decoradores siguen igual.
 
-## Agenda
+## Agenda (AGE-1 a AGE-3)
 
-| Ruta                     | Qué hace                                                                                                                             |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `GET /api/v1/franjas`    | Franjas libres y futuras. Filtros: `especialidadId`, `sedeId`, `profesionalId`, `modalidad`, `fecha` (`AAAA-MM-DD`, día de Colombia) |
-| `GET /api/v1/citas/mias` | Citas del paciente que llama, con su estado. Otro rol recibe 403                                                                     |
+| Ruta                     | Qué hace                                                                                                                                                 |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /api/v1/franjas`    | Franjas libres y futuras. Filtros: `especialidadId`, `sedeId`, `profesionalId`, `modalidad`, `fecha` (`AAAA-MM-DD`, día de Colombia)                     |
+| `GET /api/v1/citas/mias` | Citas del paciente que llama, con su estado. Otro rol recibe 403                                                                                         |
+| `POST /api/v1/citas`     | Cabecera `Idempotency-Key` (UUID) y cuerpo `{ franjaId, modalidad }`. Virtual: `PENDIENTE_PAGO`, bloqueo de 15 min y `urlPago`. Presencial: `CONFIRMADA` |
 
 - Estados y transiciones en `src/agenda/estado-cita.ts`; una transición inválida lanza `TransicionDeCitaInvalidaError`.
 - Una franja admite una sola cita que no esté `CANCELADA`: lo garantiza el índice único parcial `cita_franja_activa_key`
-  de la migración, no el código.
+  de la migración, no el código. Dos pacientes que piden la misma franja reciben un 201 y un 409.
+- La misma `Idempotency-Key` del mismo paciente devuelve la misma cita; con otra franja responde 422.
+- Si el pago no arranca, la cita pasa a `CANCELADA` (motivo `FALLA_INICIO_PAGO`), la franja queda libre y se responde 503.
 - La semilla crea franjas de lunes a viernes de las dos próximas semanas: 8:00 y 8:30 presenciales y 10:00 y 10:30
   virtuales, hora de Colombia, guardadas en UTC. Repetirla solo agrega los días que falten.
+
+**Puertos para PAG-2 y EVT-3.** La reserva depende de dos interfaces de `src/agenda/puertos.ts`, exportadas en
+`src/agenda/index.ts`: `INICIADOR_PAGO` (`iniciarPago(idCita) -> { urlPago }`, idempotente por `idCita`) y
+`BANDEJA_SALIDA` (`encolar(tx, evento)` dentro de la transacción de quien llama). Mientras llegan, `AgendaModule` usa
+dos suplentes: sin pasarela toda reserva virtual se compensa con 503, y la bandeja solo registra el evento en el log.
+Para conectarlas se cambia el `useClass` de cada token en `agenda.module.ts`.
 
 ## Módulos y tablas
 
