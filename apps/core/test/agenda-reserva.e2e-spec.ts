@@ -1,19 +1,20 @@
 import { randomUUID } from 'node:crypto';
 import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { PACIENTES, USUARIOS } from '../prisma/seed/identidad';
 import { sembrarTodo } from '../prisma/seed/index';
-import {
-  BANDEJA_SALIDA,
-  INICIADOR_PAGO,
-  type BandejaSalida,
-  type IniciadorPago,
-} from '../src/agenda';
+import { COPAGO_CITA_VIRTUAL_COP } from '../src/agenda/citas.service';
 import { CABECERA_USUARIO_DEV } from '../src/identidad';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { createTestApp } from './helpers/app';
 import { FranjasDePrueba } from './helpers/agenda';
+import {
+  bandejaDePrueba as bandeja,
+  pagoDePrueba as pago,
+  conPuertosDePrueba,
+  reiniciarPuertos,
+} from './helpers/puertos';
 
 const ANA = USUARIOS[0];
 const LUIS = USUARIOS[1];
@@ -23,10 +24,6 @@ describe('reserva de una franja (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let franjas: FranjasDePrueba;
-
-  // Doubles for the gateway (PAG-2) and the outbox (EVT-3); each test sets how they answer.
-  const pago = { iniciarPago: vi.fn<IniciadorPago['iniciarPago']>() };
-  const bandeja = { encolar: vi.fn<BandejaSalida['encolar']>() };
 
   const reservar = (
     cuerpo: object,
@@ -41,26 +38,13 @@ describe('reserva de una franja (e2e)', () => {
   const citasDe = (franjaId: string) => prisma.cita.findMany({ where: { franjaId } });
 
   beforeAll(async () => {
-    app = await createTestApp([], (builder) =>
-      builder
-        .overrideProvider(INICIADOR_PAGO)
-        .useValue(pago)
-        .overrideProvider(BANDEJA_SALIDA)
-        .useValue(bandeja),
-    );
+    app = await createTestApp([], conPuertosDePrueba);
     prisma = app.get(PrismaService);
     await sembrarTodo(prisma);
     franjas = new FranjasDePrueba(prisma);
   });
 
-  beforeEach(() => {
-    pago.iniciarPago
-      .mockReset()
-      .mockImplementation((idCita) =>
-        Promise.resolve({ urlPago: `http://localhost:4000/pagar/${idCita}` }),
-      );
-    bandeja.encolar.mockReset().mockResolvedValue();
-  });
+  beforeEach(reiniciarPuertos);
 
   afterAll(async () => {
     await franjas.limpiar();
@@ -68,7 +52,7 @@ describe('reserva de una franja (e2e)', () => {
   });
 
   describe('virtual', () => {
-    it('holds the franja for 15 minutes and answers the payment link', async () => {
+    it('holds the franja for 15 minutes, charges the copago and answers the payment link', async () => {
       const franjaId = await franjas.crear({ modalidad: 'VIRTUAL' });
       const antes = Date.now();
 
@@ -83,8 +67,10 @@ describe('reserva de una franja (e2e)', () => {
       const vence = Date.parse(body.bloqueoVenceEn) - antes;
       expect(vence).toBeGreaterThanOrEqual(15 * 60_000 - 1_000);
       expect(vence).toBeLessThanOrEqual(15 * 60_000 + 5_000);
-      expect(pago.iniciarPago).toHaveBeenCalledWith(body.id);
+      expect(pago.iniciarPago).toHaveBeenCalledWith(body.id, COPAGO_CITA_VIRTUAL_COP);
       expect(bandeja.encolar).not.toHaveBeenCalled();
+      const [cita] = await citasDe(franjaId);
+      expect(cita.copagoCop).toBe(COPAGO_CITA_VIRTUAL_COP);
     });
 
     it('cancels the cita, frees the franja and answers 503 when the payment cannot start', async () => {
@@ -100,7 +86,10 @@ describe('reserva de una franja (e2e)', () => {
         datos: { idCita: cita.id, idPaciente: PACIENTES[0].id, motivo: 'FALLA_INICIO_PAGO' },
       });
       // Freed: once the gateway answers again, another patient can take it.
-      pago.iniciarPago.mockResolvedValue({ urlPago: 'http://localhost:4000/pagar/otra' });
+      pago.iniciarPago.mockResolvedValue({
+        idTransaccion: 'tx-otra',
+        urlPago: 'http://localhost:4000/pagar/otra',
+      });
       await reservar({ franjaId, modalidad: 'VIRTUAL' }, { correo: LUIS.correo }).expect(201);
     });
   });
@@ -112,6 +101,8 @@ describe('reserva de una franja (e2e)', () => {
       const { body } = await reservar({ franjaId, modalidad: 'PRESENCIAL' }).expect(201);
 
       expect(body).toEqual({ id: expect.any(String), estado: 'CONFIRMADA' });
+      // Paid at the sede, so nothing is charged online.
+      expect((await citasDe(franjaId))[0].copagoCop).toBeNull();
       expect(pago.iniciarPago).not.toHaveBeenCalled();
       expect(bandeja.encolar).toHaveBeenCalledWith(expect.anything(), {
         clave: 'cita.confirmada',

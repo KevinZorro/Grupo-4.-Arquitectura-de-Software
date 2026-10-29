@@ -4,6 +4,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  Optional,
   ServiceUnavailableException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -11,12 +12,19 @@ import { z } from 'zod';
 import { Prisma } from '../generated/prisma/client';
 import { EstadoCita, type Modalidad } from '../generated/prisma/enums';
 import { PrismaService } from '../prisma/prisma.service';
-import { transicionar } from './estado-cita';
-import { BANDEJA_SALIDA, INICIADOR_PAGO, type BandejaSalida, type IniciadorPago } from './puertos';
+import { EstadoCitasService } from './estado-citas.service';
+import { INICIADOR_PAGO, PagoSinPasarela, type IniciadorPago } from './puertos';
 import { aVistaFranja, SELECCION_FRANJA, vistaFranjaSchema } from './vista-franja';
 
 /** How long a virtual cita holds its franja while the patient pays (docs/flujo, step 2). */
 export const BLOQUEO_PAGO_MS = 15 * 60_000;
+
+/**
+ * Copago of a virtual cita in Colombian pesos, stored on the cita when it is booked so a retry
+ * charges the same amount. A made-up figure for the prototype (supuesto A-02 sets no amount).
+ */
+// ponytail: one flat fee; a tariff per especialidad or affiliation replaces it when billing lands.
+export const COPAGO_CITA_VIRTUAL_COP = 20_000;
 
 export const vistaCitaSchema = z.object({
   id: z.uuid(),
@@ -49,6 +57,7 @@ const SELECCION_RESERVA = {
   pacienteId: true,
   estado: true,
   bloqueoVenceEn: true,
+  copagoCop: true,
   franja: { select: { modalidad: true } },
 } satisfies Prisma.CitaSelect;
 
@@ -61,12 +70,15 @@ function esViolacionDeUnicidad(error: unknown): boolean {
 @Injectable()
 export class CitasService {
   private readonly logger = new Logger(CitasService.name);
+  private readonly pago: IniciadorPago;
 
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(INICIADOR_PAGO) private readonly pago: IniciadorPago,
-    @Inject(BANDEJA_SALIDA) private readonly bandeja: BandejaSalida,
-  ) {}
+    private readonly estados: EstadoCitasService,
+    @Optional() @Inject(INICIADOR_PAGO) pago?: IniciadorPago,
+  ) {
+    this.pago = pago ?? new PagoSinPasarela();
+  }
 
   /** Every cita of the patient, cancelled ones included, the latest franja first. */
   async listarDelPaciente(pacienteId: string): Promise<VistaCita[]> {
@@ -138,14 +150,16 @@ export class CitasService {
             claveIdempotencia,
             estado: esVirtual ? EstadoCita.PENDIENTE_PAGO : EstadoCita.CONFIRMADA,
             bloqueoVenceEn: esVirtual ? new Date(ahora.getTime() + BLOQUEO_PAGO_MS) : null,
+            copagoCop: esVirtual ? COPAGO_CITA_VIRTUAL_COP : null,
           },
           select: SELECCION_RESERVA,
         });
         // A presencial cita needs no payment, so it is confirmed and announced right away.
         if (!esVirtual) {
-          await this.bandeja.encolar(tx, {
-            clave: 'cita.confirmada',
-            datos: { idCita: cita.id, idPaciente: pacienteId, modalidad: solicitud.modalidad },
+          await this.estados.anunciarConfirmada(tx, {
+            idCita: cita.id,
+            idPaciente: pacienteId,
+            modalidad: solicitud.modalidad,
           });
         }
         return cita;
@@ -185,7 +199,9 @@ export class CitasService {
       return { id: cita.id, estado: cita.estado };
     }
     try {
-      const { urlPago } = await this.pago.iniciarPago(cita.id);
+      // Citas booked before copagoCop existed carry no amount; they are charged the flat fee.
+      const monto = cita.copagoCop ?? COPAGO_CITA_VIRTUAL_COP;
+      const { urlPago } = await this.pago.iniciarPago(cita.id, monto);
       return {
         id: cita.id,
         estado: cita.estado,
@@ -196,29 +212,11 @@ export class CitasService {
       this.logger.warn(
         `No se pudo iniciar el pago de la cita ${cita.id}: ${error instanceof Error ? error.message : String(error)}`,
       );
-      await this.cancelarPorFallaDePago(cita);
+      // Compensation of step 3. If a payment was confirmed meanwhile, nothing is undone.
+      await this.prisma.$transaction((tx) => this.estados.cancelarPorFallaDeInicio(tx, cita.id));
       throw new ServiceUnavailableException(
         'La pasarela de pagos no respondió; la cita quedó cancelada y la franja libre',
       );
     }
-  }
-
-  /**
-   * Compensation of step 3: the cita is cancelled and the franja freed. The update only applies
-   * while the cita is still in the state read, so a payment confirmed meanwhile is never undone.
-   */
-  private async cancelarPorFallaDePago(cita: CitaReservada): Promise<void> {
-    await this.prisma.$transaction(async (tx) => {
-      const { count } = await tx.cita.updateMany({
-        where: { id: cita.id, estado: cita.estado },
-        data: { estado: transicionar(cita.estado, EstadoCita.CANCELADA), bloqueoVenceEn: null },
-      });
-      if (count === 1) {
-        await this.bandeja.encolar(tx, {
-          clave: 'cita.cancelada',
-          datos: { idCita: cita.id, idPaciente: cita.pacienteId, motivo: 'FALLA_INICIO_PAGO' },
-        });
-      }
-    });
   }
 }

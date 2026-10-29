@@ -86,10 +86,24 @@ En un controlador, `@UsuarioActual()` entrega a quien llama (`id`, `correo`, `no
   virtuales, hora de Colombia, guardadas en UTC. Repetirla solo agrega los días que falten.
 
 **Puertos para PAG-2 y EVT-3.** La reserva depende de dos interfaces de `src/agenda/puertos.ts`, exportadas en
-`src/agenda/index.ts`: `INICIADOR_PAGO` (`iniciarPago(idCita) -> { urlPago }`, idempotente por `idCita`) y
-`BANDEJA_SALIDA` (`encolar(tx, evento)` dentro de la transacción de quien llama). Mientras llegan, `AgendaModule` usa
-dos suplentes: sin pasarela toda reserva virtual se compensa con 503, y la bandeja solo registra el evento en el log.
-Para conectarlas se cambia el `useClass` de cada token en `agenda.module.ts`.
+`src/agenda/index.ts`: `INICIADOR_PAGO` (`iniciarPago(idCita, monto) -> { idTransaccion, urlPago }`, idempotente por
+`idCita`) y `BANDEJA_SALIDA` (`encolar(tx, evento)` dentro de la transacción de quien llama). La agenda no provee
+esos tokens: los exporta el módulo dueño desde un módulo `@Global()`, y así pagos puede importar la agenda sin un ciclo:
+
+```ts
+{ provide: INICIADOR_PAGO, useExisting: PagosService }          // PAG-2
+{ provide: BANDEJA_SALIDA, useExisting: BandejaSalidaService }  // EVT-3
+```
+
+Mientras nadie los provee, la agenda usa suplentes y lo avisa en el log al arrancar: sin pasarela, toda reserva virtual
+se compensa con 503, y sin bandeja los eventos solo llegan al log. El copago de la cita virtual se guarda en
+`cita.copago_cop` al reservar (`COPAGO_CITA_VIRTUAL_COP`, un valor ficticio de 20.000 COP).
+
+**Para el webhook (PAG-3).** `AgendaModule` exporta `EstadoCitasService`. Sus métodos reciben la transacción de quien
+llama, cambian el estado solo si la cita sigue en `PENDIENTE_PAGO` y encolan el evento en esa misma transacción:
+`confirmarPorPago(tx, idCita)` (`CitaConfirmada`) y `cancelarPorPagoRechazado(tx, idCita)` (`CitaCancelada` con
+`PAGO_RECHAZADO`, que libera la franja). Responden `false` sin tocar nada si la cita ya había salido de `PENDIENTE_PAGO`,
+y lanzan `CitaInexistenteError` si no existe.
 
 ## Módulos y tablas
 

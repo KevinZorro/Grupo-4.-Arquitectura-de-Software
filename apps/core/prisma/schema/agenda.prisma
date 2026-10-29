@@ -87,6 +87,8 @@ model Cita {
   // Set while the cita waits for its payment (PENDIENTE_PAGO); the slot is held until then.
   bloqueoVenceEn    DateTime?  @map("bloqueo_vence_en") @db.Timestamptz(3)
   claveIdempotencia String     @map("clave_idempotencia")
+  // Copago charged online, in Colombian pesos; null for a presencial cita, paid at the sede.
+  copagoCop         Int?       @map("copago_cop")
   creadoEn          DateTime   @default(now()) @map("creado_en") @db.Timestamptz(3)
   actualizadoEn     DateTime   @updatedAt @map("actualizado_en") @db.Timestamptz(3)
 
