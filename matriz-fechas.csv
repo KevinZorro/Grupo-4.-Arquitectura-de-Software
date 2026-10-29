@@ -2,17 +2,17 @@ tarea,issue,titulo,responsable,vence,estado,cerrada,dias_retraso,horas
 FUN-1,11,"FUN-1 Estructura del monorepo, TypeScript estricto, ESLint y Prettier",Javier Rincón,2026-10-25,A tiempo,2026-10-24,0,2
 FUN-2,12,"FUN-2 docker-compose con dos PostgreSQL, RabbitMQ y Mailpit",Javier Rincón,2026-10-25,A tiempo,2026-10-24,0,3
 FUN-3,13,FUN-3 Esqueleto del núcleo NestJS con Prisma y semilla,Kevin Zorro,2026-10-26,A tiempo,2026-10-26,0,5
-FUN-4,14,"FUN-4 Esqueleto del frontend con Vite, React y TypeScript",Juan Camilo Uribe,2026-10-26,Vencida,,2,3
-PAG-1,15,PAG-1 Pasarela de pagos simulada con webhook firmado,Angel Montañez,2026-10-26,Vencida,,2,2
+FUN-4,14,"FUN-4 Esqueleto del frontend con Vite, React y TypeScript",Juan Camilo Uribe,2026-10-26,Vencida,,3,3
+PAG-1,15,PAG-1 Pasarela de pagos simulada con webhook firmado,Angel Montañez,2026-10-26,Vencida,,3,2
 EVT-1,16,"EVT-1 Paquete de eventos con contratos, publicador y consumidor idempotente",Nefer Rojas,2026-10-27,A tiempo,2026-10-26,0,4
-AGE-1,17,AGE-1 Modelo de franja y cita con sus estados,Wilhen Gutiérrez,2026-10-27,Vencida,,1,2
-AGE-2,18,AGE-2 API de búsqueda de franjas y de «mis citas»,Wilhen Gutiérrez,2026-10-27,Vencida,,1,2
-EVT-3,19,EVT-3 Bandeja de salida (outbox) en el núcleo,Nefer Rojas,2026-10-28,Pendiente,,0,1
-AGE-3,20,AGE-3 Reserva exclusiva con Idempotency-Key y bloqueo de 15 min,Wilhen Gutiérrez,2026-10-28,Pendiente,,0,3
-PAG-2,21,PAG-2 Inicio del pago con timeout de 5 s y compensación,Angel Montañez,2026-10-28,Pendiente,,0,2
-PAG-3,22,PAG-3 Webhook de pago firmado e idempotente,Angel Montañez,2026-10-28,Pendiente,,0,3
-MSG-1,23,MSG-1 Adaptador de mensajería mínimo con aviso de confirmación,Nefer Rojas,2026-10-28,Pendiente,,0,2
-VID-1,24,VID-1 Adaptador de video mínimo con sala simulada y SalaCreada,Javier Rincón,2026-10-28,Pendiente,,0,2
-AGE-8,25,"AGE-8 Pantallas del paciente para buscar, reservar y ver sus citas",Juan Camilo Uribe,2026-10-28,Pendiente,,0,3
+AGE-1,17,AGE-1 Modelo de franja y cita con sus estados,Wilhen Gutiérrez,2026-10-27,Vencida,,2,2
+AGE-2,18,AGE-2 API de búsqueda de franjas y de «mis citas»,Wilhen Gutiérrez,2026-10-27,Vencida,,2,2
+EVT-3,19,EVT-3 Bandeja de salida (outbox) en el núcleo,Nefer Rojas,2026-10-28,Vencida,,1,1
+AGE-3,20,AGE-3 Reserva exclusiva con Idempotency-Key y bloqueo de 15 min,Wilhen Gutiérrez,2026-10-28,Vencida,,1,3
+PAG-2,21,PAG-2 Inicio del pago con timeout de 5 s y compensación,Angel Montañez,2026-10-28,Vencida,,1,2
+PAG-3,22,PAG-3 Webhook de pago firmado e idempotente,Angel Montañez,2026-10-28,Vencida,,1,3
+MSG-1,23,MSG-1 Adaptador de mensajería mínimo con aviso de confirmación,Nefer Rojas,2026-10-28,Vencida,,1,2
+VID-1,24,VID-1 Adaptador de video mínimo con sala simulada y SalaCreada,Javier Rincón,2026-10-28,Vencida,,1,2
+AGE-8,25,"AGE-8 Pantallas del paciente para buscar, reservar y ver sus citas",Juan Camilo Uribe,2026-10-28,Vencida,,1,3
 DEM-1,26,DEM-1 Diapositivas y guion de la demo del avance,Juan Camilo Uribe,2026-10-29,Pendiente,,0,1
 INT-1,27,INT-1 Integración del flujo completo y operación de la demo,Kevin Zorro,2026-10-29,Pendiente,,0,2
