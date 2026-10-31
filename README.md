@@ -44,3 +44,4 @@ Requiere Node 20.19 o superior.
     npm run dev -w @citas/web
 
 Abre <http://localhost:5173>. El selector de usuario semilla de la barra superior solo aparece en desarrollo; el login real llega con IDN-2. La URL del núcleo sale de `VITE_API_URL`.
+
