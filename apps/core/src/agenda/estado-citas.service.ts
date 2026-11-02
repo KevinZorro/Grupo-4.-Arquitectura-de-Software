@@ -1,13 +1,8 @@
-import { Inject, Injectable, Optional } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { Prisma } from '../generated/prisma/client';
 import { EstadoCita, type Modalidad } from '../generated/prisma/enums';
 import { transicionar } from './estado-cita';
-import {
-  BANDEJA_SALIDA,
-  BandejaSinPublicador,
-  type BandejaSalida,
-  type EventoDeCita,
-} from './puertos';
+import { BANDEJA_SALIDA, type BandejaSalida, type EventoDeCita } from './puertos';
 
 export class CitaInexistenteError extends Error {
   constructor(readonly idCita: string) {
@@ -29,11 +24,7 @@ interface CitaParaEvento {
  */
 @Injectable()
 export class EstadoCitasService {
-  private readonly bandeja: BandejaSalida;
-
-  constructor(@Optional() @Inject(BANDEJA_SALIDA) bandeja?: BandejaSalida) {
-    this.bandeja = bandeja ?? new BandejaSinPublicador();
-  }
+  constructor(@Inject(BANDEJA_SALIDA) private readonly bandeja: BandejaSalida) {}
 
   /** A presencial cita is born CONFIRMADA: only its event is missing. */
   async anunciarConfirmada(tx: Prisma.TransactionClient, cita: CitaParaEvento): Promise<void> {

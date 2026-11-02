@@ -1,4 +1,5 @@
 import { Global, Module } from '@nestjs/common';
+import { BANDEJA_SALIDA } from '../agenda';
 import { BandejaSalidaService } from './bandeja-salida.service';
 import { PublicadorPendientes } from './publicador-pendientes';
 
@@ -8,7 +9,11 @@ import { PublicadorPendientes } from './publicador-pendientes';
  */
 @Global()
 @Module({
-  providers: [BandejaSalidaService, PublicadorPendientes],
-  exports: [BandejaSalidaService],
+  providers: [
+    BandejaSalidaService,
+    PublicadorPendientes,
+    { provide: BANDEJA_SALIDA, useExisting: BandejaSalidaService },
+  ],
+  exports: [BandejaSalidaService, BANDEJA_SALIDA],
 })
 export class BandejaSalidaModule {}

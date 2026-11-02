@@ -6,12 +6,12 @@ import type { Modalidad } from '../generated/prisma/enums';
  * What the agenda needs from the rest of the core while a patient books (docs/flujo-agendar-cita-
  * virtual.md, steps 2 to 4). The agenda states the need and does not provide these tokens: the
  * module that owns the adapter exports them from a @Global() module, so the agenda never imports
- * it and the payment webhook (PAG-3) can depend on the agenda without a cycle. For example:
+ * it and the payment webhook (PAG-3) can depend on the agenda without a cycle:
  *
- *   { provide: INICIADOR_PAGO, useExisting: PagosService }          (PAG-2)
- *   { provide: BANDEJA_SALIDA, useExisting: BandejaSalidaService }  (EVT-3)
+ *   { provide: BANDEJA_SALIDA, useExisting: BandejaSalidaService }  (EVT-3, wired)
+ *   { provide: INICIADOR_PAGO, useExisting: PagosService }          (PAG-2, pending)
  *
- * While a token has no adapter the agenda falls back to a stand-in and says so in the log.
+ * Until PAG-2 lands the agenda falls back to a stand-in and says so in the log.
  */
 
 export const INICIADOR_PAGO = Symbol('INICIADOR_PAGO');
@@ -62,20 +62,5 @@ export class PagoSinPasarela implements IniciadorPago {
 
   iniciarPago(): Promise<InicioDePago> {
     return Promise.reject(new Error('La pasarela de pagos no está conectada'));
-  }
-}
-
-/** Stand-in while no module provides BANDEJA_SALIDA: the event only reaches the log. */
-export class BandejaSinPublicador implements BandejaSalida {
-  private readonly logger = new Logger(BandejaSinPublicador.name);
-
-  constructor() {
-    this.logger.warn('Nadie provee BANDEJA_SALIDA: los eventos de cita no saldrán (EVT-3)');
-  }
-
-  // ponytail: the event is lost; providing BANDEJA_SALIDA (EVT-3) stores it in the outbox.
-  encolar(_tx: Prisma.TransactionClient, { clave, datos }: EventoDeCita): Promise<void> {
-    this.logger.warn(`Evento sin bandeja de salida: ${clave} de la cita ${datos.idCita}`);
-    return Promise.resolve();
   }
 }

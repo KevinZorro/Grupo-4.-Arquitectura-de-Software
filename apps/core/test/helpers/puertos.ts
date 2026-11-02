@@ -12,20 +12,17 @@ import {
 export const pagoDePrueba = { iniciarPago: vi.fn<IniciadorPago['iniciarPago']>() };
 export const bandejaDePrueba = { encolar: vi.fn<BandejaSalida['encolar']>() };
 
-/** Provides the agenda's ports while no module does, the way PAG-2 and EVT-3 will: globally. */
+/** Provides the payment port while no module does, the way PAG-2 will: globally. */
 @Global()
 @Module({
-  providers: [
-    { provide: INICIADOR_PAGO, useValue: pagoDePrueba },
-    { provide: BANDEJA_SALIDA, useValue: bandejaDePrueba },
-  ],
-  exports: [INICIADOR_PAGO, BANDEJA_SALIDA],
+  providers: [{ provide: INICIADOR_PAGO, useValue: pagoDePrueba }],
+  exports: [INICIADOR_PAGO],
 })
 class PuertosDePruebaModule {}
 
 /**
- * The doubles win both before and after the real adapters are wired: the module provides the
- * tokens while nobody else does, and the override replaces them once PAG-2 and EVT-3 do.
+ * The doubles win before and after the real adapters are wired: the module provides the payment
+ * token while nobody else does, and the override replaces whichever adapter is there.
  */
 export const conPuertosDePrueba: AjustesDePrueba = {
   imports: [PuertosDePruebaModule],

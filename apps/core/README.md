@@ -90,19 +90,19 @@ En un controlador, `@UsuarioActual()` entrega a quien llama (`id`, `correo`, `no
 - La semilla crea franjas de lunes a viernes de las dos próximas semanas: 8:00 y 8:30 presenciales y 10:00 y 10:30
   virtuales, hora de Colombia, guardadas en UTC. Repetirla solo agrega los días que falten.
 
-**Puertos para PAG-2 y EVT-3.** La reserva depende de dos interfaces de `src/agenda/puertos.ts`, exportadas en
-`src/agenda/index.ts`: `INICIADOR_PAGO` (`iniciarPago(idCita, monto) -> { idTransaccion, urlPago }`, idempotente por
-`idCita`) y `BANDEJA_SALIDA` (`encolar(tx, evento)` dentro de la transacción de quien llama). La agenda no provee
-esos tokens: los exporta el módulo dueño desde un módulo `@Global()`, y así pagos puede importar la agenda sin un ciclo:
+**Puertos de la reserva.** La reserva depende de dos interfaces de `src/agenda/puertos.ts`, exportadas en
+`src/agenda/index.ts`: `BANDEJA_SALIDA` (`encolar(tx, evento)` dentro de la transacción de quien llama) e
+`INICIADOR_PAGO` (`iniciarPago(idCita, monto) -> { idTransaccion, urlPago }`, idempotente por `idCita`). La agenda no
+provee esos tokens: los exporta el módulo dueño desde un módulo `@Global()`, y así pagos puede importar la agenda sin un
+ciclo. `BandejaSalidaModule` ya exporta el suyo; PAG-2 debe agregar en `PagosModule`, marcado `@Global()`:
 
 ```ts
-{ provide: INICIADOR_PAGO, useExisting: PagosService }          // PAG-2
-{ provide: BANDEJA_SALIDA, useExisting: BandejaSalidaService }  // EVT-3
+{ provide: INICIADOR_PAGO, useExisting: PagosService }
 ```
 
-Mientras nadie los provee, la agenda usa suplentes y lo avisa en el log al arrancar: sin pasarela, toda reserva virtual
-se compensa con 503, y sin bandeja los eventos solo llegan al log. El copago de la cita virtual se guarda en
-`cita.copago_cop` al reservar (`COPAGO_CITA_VIRTUAL_COP`, un valor ficticio de 20.000 COP).
+Hasta entonces la agenda usa un suplente y lo avisa en el log al arrancar: toda reserva virtual se compensa con 503. El
+copago de la cita virtual se guarda en `cita.copago_cop` al reservar (`COPAGO_CITA_VIRTUAL_COP`, un valor ficticio de
+20.000 COP).
 
 **Para el webhook (PAG-3).** `AgendaModule` exporta `EstadoCitasService`. Sus métodos reciben la transacción de quien
 llama, cambian el estado solo si la cita sigue en `PENDIENTE_PAGO` y encolan el evento en esa misma transacción:
@@ -194,4 +194,4 @@ levantarla.
 
 - Dockerfile y servicio `core` en `docker-compose.yml`: hoy el compose solo levanta las bases, RabbitMQ y Mailpit, y el
   núcleo corre con `npm run start:dev`. Encaja en INT-1.
-- Bandeja de salida (EVT-3), login con JWT (IDN-1) y autorización por vínculo (AUT-*).
+- Login con JWT (IDN-1) y autorización por vínculo (AUT-*).

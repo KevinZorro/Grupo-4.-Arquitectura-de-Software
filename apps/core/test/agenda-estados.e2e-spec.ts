@@ -117,7 +117,7 @@ describe('cambios de estado de la cita para el webhook de pago (e2e)', () => {
   });
 });
 
-describe('núcleo sin adaptadores de pago ni de bandeja (e2e)', () => {
+describe('núcleo sin adaptador de pago (e2e)', () => {
   let app: INestApplication;
   let franjas: FranjasDePrueba;
 
@@ -132,7 +132,7 @@ describe('núcleo sin adaptadores de pago ni de bandeja (e2e)', () => {
     await app.close();
   });
 
-  it('starts with the stand-ins: a virtual booking is compensated with 503', async () => {
+  it('starts with the stand-in: a virtual booking is compensated with 503', async () => {
     const franjaId = await franjas.crear({ modalidad: 'VIRTUAL' });
 
     const { status } = await request(app.getHttpServer())
@@ -142,5 +142,27 @@ describe('núcleo sin adaptadores de pago ni de bandeja (e2e)', () => {
       .send({ franjaId, modalidad: 'VIRTUAL' });
 
     expect(status).toBe(503);
+  });
+
+  it('stores CitaConfirmada in the real outbox when a presencial cita is booked', async () => {
+    const prisma = app.get(PrismaService);
+    const franjaId = await franjas.crear({ modalidad: 'PRESENCIAL' });
+
+    const { body } = await request(app.getHttpServer())
+      .post('/api/v1/citas')
+      .set(CABECERA_USUARIO_DEV, USUARIOS[0].correo)
+      .set('Idempotency-Key', randomUUID())
+      .send({ franjaId, modalidad: 'PRESENCIAL' })
+      .expect(201);
+
+    const eventos = await prisma.eventoSaliente.findMany({
+      where: { clave: 'cita.confirmada', contenido: { path: ['idCita'], equals: body.id } },
+    });
+    expect(eventos).toHaveLength(1);
+    expect(eventos[0].contenido).toMatchObject({
+      idCita: body.id,
+      idPaciente: PACIENTES[0].id,
+      modalidad: 'PRESENCIAL',
+    });
   });
 });

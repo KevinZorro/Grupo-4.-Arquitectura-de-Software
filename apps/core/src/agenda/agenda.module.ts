@@ -11,7 +11,7 @@ import { FranjasService } from './franjas.service';
  * share data by exporting a service from this module's index.ts.
  *
  * It does not provide INICIADOR_PAGO nor BANDEJA_SALIDA: their owners export them from a global
- * module (see puertos.ts), and until then the agenda falls back to stand-ins.
+ * module (see puertos.ts).
  */
 @Module({
   controllers: [FranjasController, CitasController],
