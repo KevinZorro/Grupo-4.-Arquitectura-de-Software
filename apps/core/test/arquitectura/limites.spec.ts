@@ -23,8 +23,11 @@ const ESQUEMAS = join(RAIZ, 'prisma', 'schema');
  */
 const MODULOS = ['agenda', 'autorizacion', 'historia', 'identidad', 'pagos'] as const;
 
-/** Folders under src/ that belong to no domain: they serve every module. */
-const INFRAESTRUCTURA = ['config', 'generated', 'health', 'prisma'];
+/**
+ * Folders under src/ that belong to no domain: they serve every module. One with tables keeps
+ * them in a prisma/schema/<name>.prisma of its own, which the domain modules may not query.
+ */
+const INFRAESTRUCTURA = ['bandeja-salida', 'config', 'generated', 'health', 'prisma'];
 
 function listar(carpeta: string, extension: string): string[] {
   return readdirSync(carpeta).flatMap((nombre) => {
@@ -73,7 +76,11 @@ describe('límites entre módulos', () => {
     it('keeps one .prisma file per module, named after it', () => {
       const nombres = archivosDeEsquema.map((ruta) => basename(ruta, '.prisma'));
 
-      expect(nombres.filter((nombre) => !MODULOS.some((m) => m === nombre))).toEqual([]);
+      expect(
+        nombres.filter(
+          (nombre) => !MODULOS.some((m) => m === nombre) && !INFRAESTRUCTURA.includes(nombre),
+        ),
+      ).toEqual([]);
     });
 
     it('has no relation from a model to a model of another module', () => {

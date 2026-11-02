@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AgendaModule } from './agenda';
 import { AutorizacionModule } from './autorizacion';
+import { BandejaSalidaModule } from './bandeja-salida';
 import { parseEnv } from './config/env';
 import { HealthModule } from './health/health.module';
 import { HistoriaModule } from './historia';
@@ -18,6 +19,7 @@ import { PrismaModule } from './prisma/prisma.module';
       envFilePath: ['.env', '../../.env'],
     }),
     PrismaModule,
+    BandejaSalidaModule,
     HealthModule,
     AgendaModule,
     PagosModule,

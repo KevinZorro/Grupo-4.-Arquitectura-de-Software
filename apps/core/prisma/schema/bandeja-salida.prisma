@@ -1,0 +1,16 @@
+// Outbox (ADR-001). Infrastructure shared by every module: they write here only through
+// BandejaSalidaService.encolar, inside their own transaction, and never query the table themselves.
+
+model EventoSaliente {
+  // The publisher sends pending events in this order.
+  secuencia BigInt    @id @default(autoincrement())
+  idEvento  String    @unique @map("id_evento") @db.Uuid
+  clave     String
+  contenido Json
+  creadoEn  DateTime  @default(now()) @map("creado_en") @db.Timestamptz(3)
+  // Null while the broker has not confirmed it.
+  enviadoEn DateTime? @map("enviado_en") @db.Timestamptz(3)
+
+  @@index([enviadoEn, secuencia])
+  @@map("evento_saliente")
+}

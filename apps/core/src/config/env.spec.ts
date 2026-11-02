@@ -4,6 +4,7 @@ import { InvalidConfigurationError, isDevHeaderEnabled, isSwaggerEnabled, parseE
 const VALID = {
   NODE_ENV: 'development',
   CORE_DATABASE_URL: 'postgresql://core:secreto@localhost:5432/core_db',
+  RABBITMQ_URL: 'amqp://app:secreto@localhost:5672',
 };
 
 function messageOf(raw: Record<string, unknown>): string {
@@ -32,15 +33,20 @@ describe('parseEnv', () => {
   });
 
   it('ignores variables that belong to other apps', () => {
-    expect(parseEnv({ ...VALID, RABBITMQ_URL: 'amqp://app:app@localhost' })).not.toHaveProperty(
-      'RABBITMQ_URL',
-    );
+    expect(
+      parseEnv({ ...VALID, AUDIT_DATABASE_URL: 'postgresql://audit:audit@localhost/audit_db' }),
+    ).not.toHaveProperty('AUDIT_DATABASE_URL');
   });
 
   it('names every missing variable in a single error', () => {
     const message = messageOf({});
     expect(message).toContain('NODE_ENV');
     expect(message).toContain('CORE_DATABASE_URL');
+    expect(message).toContain('RABBITMQ_URL');
+  });
+
+  it.each(['http://localhost:5672', 'localhost:5672', ''])('rejects RABBITMQ_URL=%j', (url) => {
+    expect(messageOf({ ...VALID, RABBITMQ_URL: url })).toContain('RABBITMQ_URL');
   });
 
   it.each(['staging', 'prod', ''])('rejects NODE_ENV=%j', (nodeEnv) => {
