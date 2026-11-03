@@ -1,6 +1,6 @@
 # Matriz de cumplimiento de fechas límite
 
-Generada el 2026-11-02 08:20:58 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
+Generada el 2026-11-02 22:18:24 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
 
 ## Resumen por persona
 
@@ -9,7 +9,7 @@ Generada el 2026-11-02 08:20:58 (America/Bogota). Una tarea cuenta a tiempo si s
 | Wilhen Gutiérrez | 3 | 0 | 0 | 3 | 0 | 7 | 7 |
 | Angel Montañez | 3 | 0 | 0 | 3 | 0 | 7 | 7 |
 | Nefer Rojas | 3 | 1 | 1 | 1 | 0 | 7 | 3 |
-| Javier Rincón | 3 | 2 | 0 | 1 | 0 | 7 | 2 |
+| Javier Rincón | 3 | 2 | 1 | 0 | 0 | 7 | 2 |
 | Kevin Zorro | 2 | 1 | 0 | 1 | 0 | 7 | 2 |
 | Juan Camilo Uribe | 3 | 0 | 0 | 3 | 0 | 7 | 7 |
 
@@ -30,7 +30,7 @@ Generada el 2026-11-02 08:20:58 (America/Bogota). Una tarea cuenta a tiempo si s
 | PAG-2 | [#21](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/21) | Angel Montañez | 2026-10-28 | Vencida | — | 5 | 2 |
 | PAG-3 | [#22](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/22) | Angel Montañez | 2026-10-28 | Vencida | — | 5 | 3 |
 | MSG-1 | [#23](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/23) | Nefer Rojas | 2026-10-28 | Vencida | — | 5 | 2 |
-| VID-1 | [#24](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/24) | Javier Rincón | 2026-10-28 | Vencida | — | 5 | 2 |
+| VID-1 | [#24](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/24) | Javier Rincón | 2026-10-28 | Cerrada tarde | 2026-11-02 | 5 | 2 |
 | AGE-8 | [#25](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/25) | Juan Camilo Uribe | 2026-10-28 | Vencida | — | 5 | 3 |
 | DEM-1 | [#26](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/26) | Juan Camilo Uribe | 2026-10-29 | Vencida | — | 4 | 1 |
 | INT-1 | [#27](https://github.com/KevinZorro/Grupo-4.-Arquitectura-de-Software/issues/27) | Kevin Zorro | 2026-10-29 | Vencida | — | 4 | 2 |
