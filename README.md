@@ -37,8 +37,8 @@ Nefer Sneyder Rojas Porras · Kevin David Zorro Hernández · Juan Camilo Uribe 
 **Qué se prueba.** Un funcionario autenticado, sin cita, episodio ni interconsulta con el paciente, intenta abrir su
 historia. El sistema debe negar sin revelar si el paciente existe y dejar el intento registrado. La prueba usa 200
 casos (120 con vínculo y 80 sin él, de cuatro tipos; el reparto 120/80 es un supuesto nuestro) y exige: 0 falsos
-permisos, decisión de autorización en p95 ≤ 300 ms con 350 sesiones concurrentes y el 100 % de los accesos registrados
-en ≤ 2 s. Las medidas, su origen y su ventana (6:00 a 20:00) están en `docs/vision.md` §4 y en RNF-02 del plan.
+permisos, 0 falsos rechazos (los 120 con vínculo abren; negar todo también daría cero falsos permisos), decisión de
+autorización en p95 ≤ 300 ms con 350 sesiones concurrentes y el 100 % de los accesos registrados en ≤ 2 s. Las medidas, su origen y su ventana (6:00 a 20:00) están en `docs/vision.md` §4 y en RNF-02 del plan.
 
 **Por qué este y no otro.** ADR-000 pone la confidencialidad y la auditabilidad primero, y el caso dice que el riesgo es
 el acceso indebido interno. La falla se reproduce a voluntad: la batería trae los 80 casos sin vínculo y, sin la
@@ -51,7 +51,8 @@ táctica, la historia se entrega. Los descartados:
 
 **Alcance.** `escenario/` es un prototipo en JavaScript con adaptadores en memoria: modela la regla de autorización, no el
 núcleo en NestJS. Las demoras de los vínculos (20 ms) y de la auditoría (30 ms) son simuladas, así que el costo medido
-es una estimación declarada. Pide Node 22.12 o superior y no necesita Docker. Queda fuera de los workspaces, por eso el
+es una estimación declarada. Usa `node:test` y tipos con `// @ts-check` y JSDoc. Pide Node 22.12 o superior y no
+necesita Docker. Queda fuera de los workspaces, por eso el
 `npm test` de la raíz no lo corre.
 
 **Cómo correrlo.**
