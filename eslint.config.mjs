@@ -15,4 +15,14 @@ export default tseslint.config(
   {
     files: ['apps/**/*.ts', 'packages/**/*.ts'],
   },
+  {
+    // `escenario/` es un paquete de JavaScript puro, fuera de los workspaces: usa los globales de Node.
+    files: ['escenario/**/*.js'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+      },
+    },
+  },
 );
