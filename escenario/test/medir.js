@@ -118,7 +118,9 @@ for (let ronda = 0; ronda < rondas; ronda += 1) {
   const registros = escenario.puertos.auditoria.listar();
   accesos += bateria.casos.length;
   registrados += registros.length;
-  registradosATiempo += registros.filter(({ duracionMs }) => duracionMs <= PLAZO_AUDITORIA_MS).length;
+  registradosATiempo += registros.filter(
+    ({ duracionMs }) => duracionMs <= PLAZO_AUDITORIA_MS,
+  ).length;
 }
 
 const decisionP95Ms = percentil(decisionesMs, 95);
