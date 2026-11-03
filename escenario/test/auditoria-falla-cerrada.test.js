@@ -63,7 +63,11 @@ test('con la auditoría arriba, cada acceso deja un registro antes de entregar l
   const resultados = await abrirTodos(escenario, bateria);
   const registros = escenario.puertos.auditoria.listar();
 
-  assert.equal(registros.length, bateria.casos.length, 'un registro por acceso, permitido o denegado');
+  assert.equal(
+    registros.length,
+    bateria.casos.length,
+    'un registro por acceso, permitido o denegado',
+  );
 
   const registrosATiempo = registros.filter(({ duracionMs }) => duracionMs <= PLAZO_AUDITORIA_MS);
   assert.equal(registrosATiempo.length, registros.length);
