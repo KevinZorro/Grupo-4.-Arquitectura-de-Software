@@ -94,10 +94,10 @@ Colas, una por consumidor y cada una con su cola de mensajes muertos
 |---|---|---|---|---|
 | Wilhen Gutiérrez (líder) | Agenda y estados de la cita, coordinación y presentación final | Angel | 32 | 3 |
 | Angel Montañez | Pasarela simulada, pago del copago, login, portal del paciente y pruebas E2E | Wilhen | 28 | 7 |
-| Nefer Rojas | Paquete de eventos, mensajería, recordatorios y nota de atención firmada; ADR-002 | Javier | 30 | 5 |
-| Javier Rincón | Infraestructura, CI, adaptador de video, pantalla de consulta y resiliencia (EC-02); ADR-003 | Nefer | 30 | 5 |
-| Kevin Zorro | Núcleo, integración, identidad y autorización por vínculo (EC-01); ADR-004 | Juan Camilo | 29 | 6 |
-| Juan Camilo Uribe | Frontend base, servicio de auditoría y laboratorio; ADR-005 | Kevin | 32 | 3 |
+| Nefer Rojas | Paquete de eventos, mensajería, recordatorios y nota de atención firmada; ADR-004 | Javier | 30 | 5 |
+| Javier Rincón | Infraestructura, CI, adaptador de video, pantalla de consulta y resiliencia (EC-02); ADR-005 | Nefer | 30 | 5 |
+| Kevin Zorro | Núcleo, integración, identidad y autorización por vínculo (EC-01); ADR-003 | Juan Camilo | 29 | 6 |
+| Juan Camilo Uribe | Frontend base, servicio de auditoría y laboratorio; ADR-006 | Kevin | 32 | 3 |
 
 Tareas del sprint 1: 17 issues con la etiqueta `sprint-1`, 7 h por persona, con la fecha límite de cada PR en el issue.
 
