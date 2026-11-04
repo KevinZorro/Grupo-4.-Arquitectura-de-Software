@@ -1,0 +1,9 @@
+EC-01 · medición "despues" · 30 rondas × 200 casos · 2026-11-04T00:25:01.791Z · Node v22.23.4
+Supuestos: vínculos 20 ms · auditoría 30 ms · plazo de registro 2000 ms
+
+✔ Medida 1 · sin vínculo denegados: 2400/2400 (0 falsos permisos, 0 historias entregadas)
+✔ Medida 1 · con vínculo abiertos: 3600/3600 (0 falsos rechazos)
+✔ Medida 2 · decisión: p50 21.18 ms · p95 23.46 ms · máx 27.1 ms (umbral p95 ≤ 300 ms)
+✔ Medida 3 · accesos registrados: 6000/6000 en ≤ 2000 ms
+
+Costo · respuesta completa: p50 53.16 ms · p95 57 ms · máx 59.96 ms

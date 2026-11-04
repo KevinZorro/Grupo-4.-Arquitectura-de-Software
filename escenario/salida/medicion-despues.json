@@ -1,0 +1,44 @@
+{
+  "etiqueta": "despues",
+  "fecha": "2026-11-04T00:25:01.791Z",
+  "node": "v22.23.4",
+  "rondas": 30,
+  "casosPorRonda": 200,
+  "supuestos": {
+    "demoraVinculosMs": 20,
+    "demoraAuditoriaMs": 30,
+    "plazoAuditoriaMs": 2000
+  },
+  "medida1": {
+    "sinVinculo": {
+      "intentos": 2400,
+      "denegados": 2400,
+      "falsosPermisos": 0,
+      "historiasEntregadas": 0
+    },
+    "conVinculo": {
+      "intentos": 3600,
+      "abiertos": 3600,
+      "falsosRechazos": 0
+    },
+    "cumple": true
+  },
+  "medida2": {
+    "decisionP50Ms": 21.18,
+    "decisionP95Ms": 23.46,
+    "decisionMaxMs": 27.1,
+    "umbralP95Ms": 300,
+    "cumple": true
+  },
+  "medida3": {
+    "accesos": 6000,
+    "registrados": 6000,
+    "registradosATiempo": 6000,
+    "cumple": true
+  },
+  "costo": {
+    "totalP50Ms": 53.16,
+    "totalP95Ms": 57,
+    "totalMaxMs": 59.96
+  }
+}
