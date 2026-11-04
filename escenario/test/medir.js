@@ -8,15 +8,18 @@
  * fijar el "antes" (sin táctica) y repetir el "después" (con PRV-3 y PRV-4) con las mismas condiciones.
  *
  * Uso:
- *   npm run medir                       -> etiqueta "antes", 30 rondas
- *   npm run medir -- --etiqueta despues -> etiqueta "despues"
+ *   npm run medir                       -> etiqueta "despues", 30 rondas
+ *   npm run medir -- --etiqueta otra    -> etiqueta "otra"
  *   npm run medir -- --rondas 50
+ *   npm run medir -- --sobrescribir     -> reemplaza una medición ya guardada
  *
- * Escribe `salida/medicion-<etiqueta>.json` y `salida/medicion-<etiqueta>.txt`. Siempre sale con código 0:
- * medir no es aprobar, la aprobación es de `npm run escenario`.
+ * Escribe `salida/medicion-<etiqueta>.json` y `salida/medicion-<etiqueta>.txt`. Si esos archivos ya existen no
+ * los pisa: imprime la medición y avisa. El "antes" (sin táctica) no se puede volver a medir con el código
+ * actual, así que su archivo no se reemplaza nunca. Siempre sale con código 0: medir no es aprobar, la
+ * aprobación es de `npm run escenario`.
  */
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
@@ -30,12 +33,13 @@ const UMBRAL_DECISION_P95_MS = 300;
 
 const { values } = parseArgs({
   options: {
-    etiqueta: { type: 'string', default: 'antes' },
+    etiqueta: { type: 'string', default: 'despues' },
     rondas: { type: 'string', default: '30' },
+    sobrescribir: { type: 'boolean', default: false },
   },
 });
 
-const etiqueta = values.etiqueta ?? 'antes';
+const etiqueta = values.etiqueta ?? 'despues';
 const rondas = Number(values.rondas);
 
 if (!/^[a-z0-9-]+$/.test(etiqueta)) {
@@ -185,6 +189,21 @@ const texto = lineas.join('\n');
 console.log(texto);
 
 const carpeta = join(dirname(fileURLToPath(import.meta.url)), '..', 'salida');
-mkdirSync(carpeta, { recursive: true });
-writeFileSync(join(carpeta, `medicion-${etiqueta}.json`), `${JSON.stringify(medicion, null, 2)}\n`);
-writeFileSync(join(carpeta, `medicion-${etiqueta}.txt`), texto);
+const archivoJson = join(carpeta, `medicion-${etiqueta}.json`);
+const archivoTexto = join(carpeta, `medicion-${etiqueta}.txt`);
+
+if (etiqueta === 'antes' && existsSync(archivoJson)) {
+  console.log(
+    'No se guardó: el "antes" (sin táctica) no se puede volver a medir con el código actual, ' +
+      'así que salida/medicion-antes.* no se reemplaza.',
+  );
+} else if (existsSync(archivoJson) && !values.sobrescribir) {
+  console.log(
+    `No se guardó: ya existe salida/medicion-${etiqueta}.*. Usa --sobrescribir para reemplazarla.`,
+  );
+} else {
+  mkdirSync(carpeta, { recursive: true });
+  writeFileSync(archivoJson, `${JSON.stringify(medicion, null, 2)}\n`);
+  writeFileSync(archivoTexto, texto);
+  console.log(`Guardado en salida/medicion-${etiqueta}.json y .txt`);
+}

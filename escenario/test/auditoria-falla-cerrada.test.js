@@ -58,6 +58,7 @@ test('con la auditoría arriba, cada acceso deja un registro antes de entregar l
   const escenario = crearEscenario({
     historias: bateria.historias,
     vinculos: bateria.vinculos,
+    caidaAuditoria: false,
   });
 
   const resultados = await abrirTodos(escenario, bateria);
@@ -90,6 +91,7 @@ test('si la auditoría no responde a tiempo, la historia no se entrega', async (
     historias: bateria.historias,
     vinculos: bateria.vinculos,
     demoraAuditoriaMs: 200,
+    caidaAuditoria: false,
   });
 
   const resultados = await abrirTodos(escenario, bateria, { plazoAuditoriaMs: 20 });
