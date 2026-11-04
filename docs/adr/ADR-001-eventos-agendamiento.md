@@ -1,6 +1,6 @@
 # ADR-001: El pago se confirma por webhook, y la sala y los avisos salen por evento
 
-Estado: borrador · Semana 6, 2026-II · Grupo 4
+Estado: aceptado · 2026-11-03 (propuesto en la semana 6, 2026-II) · Grupo 4
 Autor: Nefer Sneyder Rojas Porras (1152307)
 Se deriva del ADR-000 y del escenario de calidad EC-02. Depende del supuesto A-02 (el copago de la cita virtual se
 paga en línea).
