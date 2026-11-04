@@ -20,6 +20,7 @@ export default tseslint.config(
     files: ['escenario/**/*.js'],
     languageOptions: {
       globals: {
+        AbortController: 'readonly',
         console: 'readonly',
         process: 'readonly',
       },
