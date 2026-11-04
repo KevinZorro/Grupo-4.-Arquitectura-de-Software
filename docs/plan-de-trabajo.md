@@ -87,7 +87,7 @@ cumple y Podría queda fuera del semestre salvo que sobre tiempo.
 | RF-05.2 | Enviar la orden digital al laboratorio en convenio | A-01 | Debería | LAB-1 |
 | **RF-06** | **Resultados de laboratorio** | | | |
 | RF-06.1 | Recibir por cola resultados en formatos heterogéneos (JSON y CSV en el prototipo), al ritmo de cada laboratorio | RF-06, caso §5 | Debería | LAB-1 |
-| RF-06.2 | Normalizarlos a un formato común y conciliarlos con la orden y el paciente, con acuse de recibo | RF-06, ADR-005 | Debería | LAB-2 |
+| RF-06.2 | Normalizarlos a un formato común y conciliarlos con la orden y el paciente, con acuse de recibo | RF-06, ADR-006 | Debería | LAB-2 |
 | RF-06.3 | Resolver en una bandeja manual lo que no concilia | Visión §7 | Debería | LABUI |
 | **RF-07** | **Portal del paciente** | | | |
 | RF-07.1 | Ver mis citas con su estado (pago pendiente, confirmada, sala en preparación o cancelada) | RF-07, ADR-001 | Debe | AGE-2, AGE-8, PAG-6, VID-2 |
@@ -95,7 +95,7 @@ cumple y Podría queda fuera del semestre salvo que sobre tiempo.
 | RF-07.3 | Ver mis resultados, fórmulas y órdenes | RF-07 | Debería | FOR, LABUI |
 | RF-07.4 | Entrar a la videoconsulta desde el portal | ADR-001 | Debe | VID-5 |
 | **RF-08** | **Registro inmutable de todo acceso a una historia** | | | |
-| RF-08.1 | Autorizar por vínculo asistencial vigente y denegar por defecto, sin revelar si el paciente existe | RF-08, EC-01, ADR-004 | Debe | AUT-1 |
+| RF-08.1 | Autorizar por vínculo asistencial vigente y denegar por defecto, sin revelar si el paciente existe | RF-08, EC-01, ADR-003 | Debe | AUT-1 |
 | RF-08.2 | Registrar cada acceso (quién, cuándo, desde dónde y con qué justificación) antes de entregar la historia, y negarlo si la auditoría no responde | RF-08, visión §7 | Debe | AUD-3, AUT-2 |
 | RF-08.3 | Guardar la traza solo por anexado, en un servicio con base y credenciales propias, encadenada con hashes | ADR-000 | Debe | AUD-1, AUD-2 |
 | RF-08.4 | Consultar como auditor trazas filtradas, solo metadato y solo lectura | Visión §1 | Debe | AUD-4 |
@@ -129,7 +129,7 @@ cómo se comprobará en el prototipo.
 | RNF-09 | Integración sin fuga | Cada frontera declara los campos que la cruzan. A la pasarela van el monto y una referencia opaca; a la mensajería, nombre, fecha, hora y sede; al video, un id opaco y un token corto; en los eventos, solo identificadores | ADR-000, ADR-001, visión §1 | Revisión de contratos y prueba de que el correo no lleva especialidad ni motivo (MSG-1) | Debe |
 | RNF-10 | Integridad de la historia | Una nota firmada no cambia y sus correcciones quedan como adenda | Caso §5, RF-04 | HCL-1 | Debe |
 | RNF-11 | Cumplimiento normativo | Reserva, retención de largo plazo e integridad de la historia y de los datos personales | Caso §5 | Sin borrado físico de la historia, datos ficticios y política de retención documentada | Debe |
-| RNF-12 | Mantenibilidad y evolución | Monolito modular en el que ningún módulo consulta las tablas de otro, con un adaptador por tercero, listo para requisitos nuevos, incluida la IA | Caso §7, visión §6, ADR-000 | Estructura por módulos, revisión en cada PR y ADR-002 | Debe |
+| RNF-12 | Mantenibilidad y evolución | Monolito modular en el que ningún módulo consulta las tablas de otro, con un adaptador por tercero, listo para requisitos nuevos, incluida la IA | Caso §7, visión §6, ADR-000 | Estructura por módulos, revisión en cada PR y ADR-004 | Debe |
 | RNF-13 | Operación sin equipo 24/7 | Todo arranca con un comando, las fallas quedan a la vista y los valores por defecto son seguros | Caso §5 | `docker compose up` y RES-2 | Debe |
 | RNF-14 | Degradación de la videoconsulta | La videoconsulta degrada con dignidad cuando el ancho de banda es limitado | Caso §5 | El MVP solo muestra «sala en preparación»; el modo solo audio es Podría | Podría |
 
@@ -167,7 +167,7 @@ en horas más probables, queda así:
 | Autorización y auditoría | 26 | 6 | — | 32 |
 | Laboratorio | — | 15 | — | 15 |
 | Resiliencia | 8 | — | 4 | 12 |
-| ADR-002 a ADR-005, README y diagramas | 10 | — | — | 10 |
+| ADR-003 a ADR-006, README y diagramas | 10 | — | — | 10 |
 | Demos y coordinación | 13 | — | — | 13 |
 | **Total** | **163** | **41** | **34** | **238** |
 
@@ -273,18 +273,18 @@ gantt
     Paquete de eventos y aviso :2026-10-24, 7d
     Reintentos y aviso de cancelación :2026-10-31, 7d
     Nota de atención firmada :2026-11-07, 7d
-    Recordatorios y ADR-002 :2026-11-14, 11d
+    Recordatorios y ADR-004 :2026-11-14, 11d
 
     section Javier · infraestructura y video
     Docker Compose y adaptador de video :2026-10-24, 7d
     CI y token de video :2026-10-31, 7d
     Pantalla de consulta :2026-11-07, 7d
     Circuit breaker y estado degradado :2026-11-14, 7d
-    Demo de caos y ADR-003 :2026-11-21, 7d
+    Demo de caos y ADR-005 :2026-11-21, 7d
 
     section Kevin · núcleo y autorización
     Núcleo base e integración :2026-10-24, 7d
-    Login y ADR-004 :2026-10-31, 7d
+    Login y ADR-003 :2026-10-31, 7d
     Autorización por vínculo :2026-11-07, 7d
     Auditoría síncrona y batería de 200 casos :2026-11-14, 7d
     Integración final :2026-11-21, 7d
@@ -292,7 +292,7 @@ gantt
     section Juan Camilo · auditoría y laboratorio
     Frontend base y pantallas del paciente :2026-10-24, 7d
     Servicio de auditoría :2026-10-31, 14d
-    ADR-005 y laboratorio :2026-11-14, 11d
+    ADR-006 y laboratorio :2026-11-14, 11d
 ```
 
 La imagen del cronograma para las diapositivas está en `docs/img/cronograma.png`. El detalle de los sprints 2 a 5,
@@ -303,7 +303,7 @@ con responsable y horas, es el siguiente; el del sprint 1 está en la sección 7
 | ID | Tarea | Responsable | h |
 |---|---|---|---|
 | IDN-1 | Login con JWT, contraseñas con hash, cuatro roles y guardas por rol | Kevin | 5 |
-| DOC-3 | ADR-004 sobre la autorización por vínculo asistencial, escrito antes de implementarla | Kevin | 2 |
+| DOC-3 | ADR-003 sobre la autorización por vínculo asistencial, escrito antes de implementarla | Kevin | 2 |
 | FUN-5 | Integración continua en GitHub Actions con lint, tipos, pruebas y build | Javier | 2 |
 | VID-3 | Token de vigencia corta al entrar, con llamada síncrona del núcleo al adaptador y timeout | Javier | 4 |
 | EVT-2 | Reintentos con espera creciente, cola de mensajes muertos y vida útil en `packages/eventos` | Nefer | 3 |
@@ -348,12 +348,12 @@ vínculo. Ese día también es el punto de control del alcance, según la regla 
 | RES-1 | Timeouts y circuit breaker en las llamadas a terceros, que abre tras 5 fallos | Javier | 3 |
 | RES-2 | Estado degradado con el health de los adaptadores y aviso en la interfaz | Javier | 3 |
 | REC-1 | Debería. Recordatorios programados con reintentos y vida útil hasta 3 h antes de la cita | Nefer | 5 |
-| DOC-1 | ADR-002 sobre el monolito modular | Nefer | 2 |
+| DOC-1 | ADR-004 sobre el monolito modular | Nefer | 2 |
 | HCL-2 | Vista de la historia del paciente en línea de tiempo, reutilizada en la pantalla de consulta | Wilhen | 4 |
 | COORD | Coordinación y decisión de alcance | Wilhen | 1 |
 | POR-2 | «Mi historia» en el portal, solo la propia, con prueba de acceso a un recurso ajeno | Angel | 3 |
 | VID-5 | Entrada del paciente desde el portal, con consentimiento de teleconsulta | Angel | 2 |
-| DOC-4 | ADR-005 sobre la normalización de resultados de laboratorio, escrito antes de implementarla | Juan Camilo | 2 |
+| DOC-4 | ADR-006 sobre la normalización de resultados de laboratorio, escrito antes de implementarla | Juan Camilo | 2 |
 | LAB-1 | Debería. Simulador de laboratorio que recibe órdenes y responde en JSON y CSV, con ingesta por cola y normalizadores por formato | Juan Camilo | 5 |
 
 El viernes 20 se cumple el hito del MVP completo si la batería de 200 casos corre en CI sin falsos permisos y el acceso
@@ -367,7 +367,7 @@ caído mientras la interfaz anuncia el estado degradado.
 | REC-2 | Debería. Confirmar o cancelar la cita desde el enlace del recordatorio | Nefer | 3 |
 | LAB-2 | Debería. Conciliación por orden y paciente, acuse, `ResultadoRecibido` o `ResultadoNoConciliado` y resultado visible en la historia | Juan Camilo | 5 |
 | RES-3 | Guion de la demo de caos, que apaga video y mensajería y muestra que agenda e historia siguen respondiendo | Javier | 2 |
-| DOC-2 | ADR-003 sobre la videoconsulta con un tercero | Javier | 2 |
+| DOC-2 | ADR-005 sobre la videoconsulta con un tercero | Javier | 2 |
 | DEM-2 | Pruebas E2E del camino feliz con Playwright | Angel | 4 |
 | INT-5 | Integración final y corrección de errores | Kevin | 2 |
 | DEM-3 | Presentación final con guion, diapositivas y ensayo | Wilhen | 4 |
@@ -505,10 +505,10 @@ restricción de unicidad, en un esquema propio dentro del PostgreSQL del núcleo
 |---|---|---|---|---|
 | Wilhen Gutiérrez (líder) | Agenda y estados de la cita, coordinación y presentación final | Angel | 32 | 3 |
 | Angel Montañez | Pasarela simulada, pago del copago, login, portal del paciente y pruebas E2E | Wilhen | 28 | 7 |
-| Nefer Rojas | Paquete de eventos, mensajería, recordatorios y nota de atención firmada; ADR-002 | Javier | 30 | 5 |
-| Javier Rincón | Infraestructura, CI, adaptador de video, pantalla de consulta y resiliencia (EC-02); ADR-003 | Nefer | 30 | 5 |
-| Kevin Zorro | Núcleo, integración, identidad y autorización por vínculo (EC-01); ADR-004 | Juan Camilo | 29 | 6 |
-| Juan Camilo Uribe | Frontend base, servicio de auditoría y laboratorio; ADR-005 | Kevin | 32 | 3 |
+| Nefer Rojas | Paquete de eventos, mensajería, recordatorios y nota de atención firmada; ADR-004 | Javier | 30 | 5 |
+| Javier Rincón | Infraestructura, CI, adaptador de video, pantalla de consulta y resiliencia (EC-02); ADR-005 | Nefer | 30 | 5 |
+| Kevin Zorro | Núcleo, integración, identidad y autorización por vínculo (EC-01); ADR-003 | Juan Camilo | 29 | 6 |
+| Juan Camilo Uribe | Frontend base, servicio de auditoría y laboratorio; ADR-006 | Kevin | 32 | 3 |
 
 | Horas de tareas por sprint | S1 | S2 | S3 | S4 | S5 | Total |
 |---|---|---|---|---|---|---|

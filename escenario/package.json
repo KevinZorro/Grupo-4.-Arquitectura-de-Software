@@ -1,0 +1,17 @@
+{
+  "name": "escenario-ec01",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simulación del escenario de calidad EC-01: nadie sin vínculo asistencial abre una historia clínica y todo acceso queda auditado.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "escenario": "node --test \"test/**/*.test.js\"",
+    "escenario:sin-falla": "node --env-file=entornos/sin-falla.env --test \"test/**/*.test.js\"",
+    "escenario:auditoria-caida": "node --env-file=entornos/auditoria-caida.env --test \"test/*-falla-cerrada.test.js\"",
+    "medir": "node test/medir.js",
+    "test": "node --test \"test/**/*.test.js\""
+  }
+}

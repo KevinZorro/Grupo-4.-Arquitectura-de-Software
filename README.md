@@ -11,7 +11,7 @@ Nefer Sneyder Rojas Porras · Kevin David Zorro Hernández · Juan Camilo Uribe 
 |---|---|---|
 | `docs/vision.md` | Cuestionario 1, preguntas 0 a 7: supuestos (incluido A-02, cobro en línea del copago), actores, funciones, escenarios EC-01 y EC-02 | Angel Montañez |
 | `docs/img/contexto-c4-nivel1.png` | Diagrama de contexto C4 nivel 1: 8 actores y 16 flechas, con la pasarela de pagos | Angel Montañez |
-| `docs/adr/ADR-000-vision-y-atributos.md` | Atributos de calidad rectores y su orden; pregunta 8: decisiones derivadas (ADR-001 a ADR-005) | Juan Camilo Uribe |
+| `docs/adr/ADR-000-vision-y-atributos.md` | Atributos de calidad rectores y su orden; pregunta 8: decisiones derivadas (ADR-001 a ADR-006) | Juan Camilo Uribe |
 | `docs/flujo-agendar-cita-virtual.md` | Flujo "agendar una cita virtual con cobro del copago": 6 pasos, decisión paso por paso (síncrono o evento, compensación, idempotencia) y por qué así | Wilhen Gutiérrez |
 | `docs/diagramas/` | Diagramas de secuencia y de estados de la cita (Archify): imagen PNG, versión interactiva HTML y fuente JSON | Wilhen Gutiérrez |
 | `docs/contenedores.dsl` · `docs/contenedores.png` | Vista de contenedores C4 en Structurizr DSL y su imagen exportada; cada flecha indica protocolo y si espera respuesta | Javier Rincón |
