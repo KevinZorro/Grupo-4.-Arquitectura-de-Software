@@ -26,7 +26,8 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
 
 ## Estructura
 - `docs/vision.md`: supuestos A-01 y A-02, actores, funciones, EC-01 y EC-02, monolito vs. distribuido.
-- `docs/adr/`: ADR-000 (atributos rectores) y ADR-001 (eventos del agendamiento). ADR-002 a ADR-005 pendientes.
+- `docs/adr/`: ADR-000 (atributos rectores), ADR-001 (eventos del agendamiento), ADR-002 (modelo de lenguaje) y
+  ADR-003 (autorización por vínculo). ADR-004 a ADR-006 pendientes: monolito, videoconsulta y laboratorio.
 - `docs/flujo-agendar-cita-virtual.md` y `docs/diagramas/`: flujo de 6 pasos, secuencia y estados de la cita.
 - `docs/contenedores.dsl` y `docs/contenedores.png`: vista C4 de contenedores (Structurizr DSL).
 - `docs/plan-de-trabajo.md`: RF, RNF, estimación, cronograma, reparto por persona y contratos del sprint 1.
@@ -35,6 +36,8 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
   `prisma/schema/<módulo>.prisma`. Guía, usuarios semilla y recetas en `apps/core/README.md`.
 - `apps/core/src/bandeja-salida/`: bandeja de salida (infraestructura, tabla `evento_saliente`). Los módulos guardan
   eventos con `BandejaSalidaService.encolar(tx, { clave, datos })` y el publicador los envía a RabbitMQ.
+- `escenario/`: prototipo en JavaScript puro del camino de EC-01 (segundo previo, ADR-003), fuera de los workspaces y sin
+  Docker: `cd escenario && npm run escenario`. `npm run medir` guarda `salida/medicion-despues.*` y no pisa mediciones ya guardadas (`--sobrescribir`); el "antes" no se reemplaza.
 
 ## Arquitectura
 Monolito modular (agenda, pagos, historia, autorización, identidad) en el que ningún módulo consulta las tablas de

@@ -1,0 +1,81 @@
+# EC-01 · auditoría síncrona con falla cerrada: pruebas en rojo (PRV-4, commit del rojo)
+# Rama: feat/prv-1-escenario-ec01
+# Fecha: 2026-11-03T18:35:21-05:00 · Node v22.23.4
+# Código de salida: 1 — fallan a propósito: todavía no se llama la auditoría.
+
+TAP version 13
+# Subtest: con la auditoría caída nadie abre una historia (falla cerrada)
+not ok 1 - con la auditoría caída nadie abre una historia (falla cerrada)
+  ---
+  duration_ms: 12.995326
+  type: 'test'
+  location: '/home/claude/grupo-4.-arquitectura-de-software/escenario/test/auditoria-falla-cerrada.test.js:38:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    120 historias salieron sin auditoría
+    
+    120 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 120
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/claude/grupo-4.-arquitectura-de-software/escenario/test/auditoria-falla-cerrada.test.js:49:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: con la auditoría arriba, cada acceso deja un registro antes de entregar la historia
+not ok 2 - con la auditoría arriba, cada acceso deja un registro antes de entregar la historia
+  ---
+  duration_ms: 4.576397
+  type: 'test'
+  location: '/home/claude/grupo-4.-arquitectura-de-software/escenario/test/auditoria-falla-cerrada.test.js:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    un registro por acceso, permitido o denegado
+    
+    0 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/claude/grupo-4.-arquitectura-de-software/escenario/test/auditoria-falla-cerrada.test.js:66:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: si la auditoría no responde a tiempo, la historia no se entrega
+not ok 3 - si la auditoría no responde a tiempo, la historia no se entrega
+  ---
+  duration_ms: 0.645521
+  type: 'test'
+  location: '/home/claude/grupo-4.-arquitectura-de-software/escenario/test/auditoria-falla-cerrada.test.js:83:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    200 !== 503
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 503
+  actual: 200
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/claude/grupo-4.-arquitectura-de-software/escenario/test/auditoria-falla-cerrada.test.js:94:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 108.422221

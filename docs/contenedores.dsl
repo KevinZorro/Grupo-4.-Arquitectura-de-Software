@@ -22,11 +22,15 @@ workspace "Citas y telemedicina" "Caso 4 - Grupo 4" {
             workerMensajeria = container "Adaptador de mensajeria" "Envia confirmaciones y recordatorios con fecha, hora y sede, sin datos clinicos" "Node.js"
 
             workerLaboratorio = container "Worker de laboratorio" "Recibe resultados, normaliza formatos y concilia cada resultado con una orden y un paciente" "Node.js"
+
+            workerModelo = container "Adaptador del modelo" "Consume BorradorSolicitado, solicita texto seudonimizado y llama al proveedor externo" "Node.js"
         }
 
         pasarela = softwareSystem "Pasarela de pagos" "Cobra el copago de la cita virtual" "Externo"
 
         video = softwareSystem "Proveedor de video" "Proporciona la sala de videoconsulta" "Externo"
+
+        proveedorModelo = softwareSystem "Proveedor del modelo de lenguaje" "Genera borradores seudonimizados; el medico debe aprobarlos antes de firmar" "Externo"
 
         mensajeria = softwareSystem "Pasarela de mensajeria" "Envia SMS y correo electronico" "Externo"
 
@@ -39,7 +43,9 @@ workspace "Citas y telemedicina" "Caso 4 - Grupo 4" {
 
         profesional -> nucleo "Consulta la agenda" "HTTPS, sincrono, espera respuesta"
 
-        profesional -> nucleo "Solicita acceso a la historia clinica autorizada" "HTTPS, sincrono, espera respuesta"
+        profesional -> nucleo "[EC-01] Solicita acceso a la historia clinica" "HTTPS, sincrono, espera respuesta" {
+            tags "EscenarioEC01"
+        }
 
         administrativo -> nucleo "Agenda, reprograma y consulta disponibilidad" "HTTPS, sincrono, espera respuesta"
 
@@ -52,12 +58,22 @@ workspace "Citas y telemedicina" "Caso 4 - Grupo 4" {
         nucleo -> bd "Guarda la cita, los estados, la bandeja outbox y las llaves de idempotencia" "SQL, sincrono, espera respuesta"
 
 
-        nucleo -> auditoria "Autoriza y registra el acceso a la historia clinica" "HTTPS, sincrono, espera respuesta"
+        nucleo -> auditoria "[EC-01] Registra el acceso antes de entregar la historia" "HTTPS, sincrono, espera respuesta" {
+            tags "EscenarioEC01"
+        }
+
+        nucleo -> broker "Publica CitaConfirmada, CitaCancelada y BorradorSolicitado" "AMQP, asincrono, sin espera de respuesta" "Asincrono"
+
+        broker -> workerModelo "Entrega BorradorSolicitado" "AMQP, asincrono, sin espera de respuesta" "Asincrono"
+
+        workerModelo -> nucleo "Solicita texto seudonimizado y entrega el borrador para validacion" "HTTPS/JSON, sincrono, espera respuesta"
+
+        workerModelo -> proveedorModelo "Solicita el borrador seudonimizado" "HTTPS/JSON, sincrono, timeout 20 s, espera respuesta" {
+            tags "ADR-002"
+        }
 
         broker -> auditoria "Entrega los eventos CitaConfirmada y CitaCancelada para auditoria" "AMQP, asincrono, sin espera de respuesta" "Asincrono"
 
-
-        nucleo -> broker "Publica CitaConfirmada y CitaCancelada" "AMQP, asincrono, sin espera de respuesta" "Asincrono"
 
         broker -> nucleo "Entrega eventos de SalaCreada y cambios de estado" "AMQP, al menos una vez, sin espera de respuesta" "Asincrono"
 
@@ -131,6 +147,15 @@ workspace "Citas y telemedicina" "Caso 4 - Grupo 4" {
             relationship "Asincrono" {
                 dashed true
                 color #9A5A0C
+            }
+
+            relationship "EscenarioEC01" {
+                color #B42318
+                thickness 4
+            }
+
+            relationship "ADR-002" {
+                color #6B4E9B
             }
         }
     }

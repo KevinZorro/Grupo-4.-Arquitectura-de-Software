@@ -71,17 +71,21 @@ independientes, cada una registrada en su propio ADR:
    llega después por evento (confirmación del pago vía webhook, creación de la sala y envío
    del aviso), de modo que la caída de un tercero *distinto de la pasarela* no bloquee el
    agendamiento.
-2. **ADR-002 — Monolito modular.** Cómo se organiza el núcleo asistencial (agenda, historia
+2. **ADR-002 — Modelo de lenguaje para el borrador de la nota de atención.** Dónde entra el
+   primer componente de IA que anuncia el caso (§7) y qué lo controla: el médico aprueba
+   antes de firmar y al proveedor solo cruza texto seudonimizado.
+3. **ADR-003 — Autorización de acceso por vínculo asistencial.** Quién puede consultar la
+   historia clínica de un paciente, con base en si existe una relación asistencial vigente,
+   y cómo queda registrado cada acceso antes de entregarla.
+4. **ADR-004 — Monolito modular.** Cómo se organiza el núcleo asistencial (agenda, historia
    clínica y autorización) como un único desplegable con módulos internos, en vez de
    servicios separados.
-3. **ADR-003 — Videoconsulta con un tercero.** Por qué la sala de video se delega a un
+5. **ADR-005 — Videoconsulta con un tercero.** Por qué la sala de video se delega a un
    proveedor externo en lugar de construir esa capacidad dentro del núcleo.
-4. **ADR-004 — Autorización de acceso por vínculo asistencial.** Quién puede consultar la
-   historia clínica de un paciente, con base en si existe una relación asistencial vigente.
-5. **ADR-005 — Normalización de laboratorio.** Cómo se homologan los resultados de
+6. **ADR-006 — Normalización de laboratorio.** Cómo se homologan los resultados de
    laboratorio que llegan de distintas fuentes a un formato común dentro del sistema.
 
-*Nota sobre la numeración.* Esta lista ya se renumeró dos veces. En el Cuestionario 1 el
+*Nota sobre la numeración.* Esta lista se renumeró tres veces. En el Cuestionario 1 el
 monolito modular era el ADR-001; se corrió un puesto porque la actividad "Del flujo al
 patrón" pedía que el ADR-001 fuera el del patrón clásico (agendamiento por evento). Con el
 pivot al cobro de copago, ADR-001 cambia de alcance otra vez: ya no trata la confirmación de
@@ -89,3 +93,9 @@ la cita como un hecho aislado, sino el flujo completo con la pasarela de pagos (
 reserva y pago síncronos; confirmación, sala y aviso por evento). ADR-002 a ADR-005
 conservan su alcance original y solo se renumeran para dejar ADR-001 como punto de entrada
 al flujo de agendamiento.
+
+La tercera vez fue para el segundo previo, cuya guía fija el ADR-002 para el modelo de
+lenguaje y el ADR-003 para la táctica del escenario de calidad. Esa táctica es la
+autorización por vínculo asistencial, así que pasa del ADR-004 al ADR-003. El monolito
+modular, la videoconsulta y la normalización de laboratorio se corren a ADR-004, ADR-005 y
+ADR-006. Ninguno de los tres estaba escrito, así que no hubo nada que migrar.
