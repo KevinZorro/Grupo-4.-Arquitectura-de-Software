@@ -52,19 +52,27 @@ menos.
 
 ## Costo
 
-- **Latencia.** Antes de las tácticas (commit `fff0c75`, 30 rondas de 200 casos, máquina de Juan Camilo, Node 22.23):
-  decisión p50 0,29 ms y p95 2,79 ms; respuesta completa p50 0,29 ms y p95 2,8 ms. Después:
-  **[PENDIENTE: Juan Camilo, con `npm run medir` en la misma máquina]** decisión p50 __ ms y p95 __ ms; respuesta
-  completa p50 __ ms y p95 __ ms. La decisión ahora espera la consulta de vínculos, y la respuesta espera además el
-  registro de auditoría.
+- **Latencia.** Las dos mediciones usan las mismas condiciones: 30 rondas de 200 intentos a la vez, en el mismo
+  entorno (Linux de 2 núcleos, Node 22.23.4), con `escenario/test/medir.js`. No son medidas de la máquina de nadie del
+  grupo, y compararlas con una corrida en otro equipo no tendría sentido.
+
+  | | Decisión p50 | Decisión p95 | Respuesta completa p50 | Respuesta completa p95 |
+  |---|---|---|---|---|
+  | Antes (commit `fff0c75`, sin tácticas) | 0,29 ms | 2,79 ms | 0,29 ms | 2,80 ms |
+  | Después (con PRV-3 y PRV-4) | 21,18 ms | 23,46 ms | 53,16 ms | 57,00 ms |
+
+  Los datos están en `escenario/salida/medicion-antes.json` y `medicion-despues.json`. La decisión ahora espera la
+  consulta de vínculos (+21 ms) y la respuesta espera además el registro de auditoría (+53 ms en total). Casi todo ese
+  costo son las demoras supuestas de 20 ms y 30 ms; el resto, de 1 a 4 ms, es del código y del reparto de los 200
+  intentos. El p95 de la decisión queda 12 veces por debajo del techo de 300 ms.
 - **Las demoras son simuladas.** Por supuesto declarado, los vínculos tardan 20 ms y la auditoría 30 ms
   (`escenario/src/puertos.js`). El costo medido es una estimación, no una medición del núcleo real.
 - **Código.** Desde el commit en rojo, las dos tácticas agregan 144 líneas y quitan 11 en `escenario/src/`
   (`git diff --stat 942e435 -- escenario/src/`): las 74 de `registrarAcceso.js`, que es nuevo, y 70 en
   `abrirHistoria.js`. La autorización sola agrega 39 y quita 10, buena parte de ellas en comentarios.
 - **Falla nueva.** Con la auditoría o los vínculos caídos nadie abre una historia, ni siquiera quien tiene la cita: la
-  operación falla cerrada con 503. Se ve con `npm run escenario:auditoria-caida` y con la prueba
-  `vinculos-falla-cerrada.test.js`.
+  operación falla cerrada con 503. Se ve con `npm run escenario:auditoria-caida`, que corre solo las pruebas de falla
+  cerrada (auditoría caída, auditoría que no responde a tiempo y vínculos caídos).
 - **Urgencias.** Una urgencia sin cita, episodio ni interconsulta queda bloqueada hasta que exista el acceso de
   emergencia con justificación (EMG, RF-08.6), que no está en el prototipo.
 - **Estado nuevo.** Aparece la respuesta 503 «no disponible por seguridad», distinta de «no encontrado», y la pantalla de
@@ -77,8 +85,8 @@ menos.
 cd escenario
 npm run escenario                  # EC-01 en verde: 80/80 negados, 120/120 abiertos y 200/200 registrados
 npm run escenario:sin-falla        # solo los 120 casos con vínculo
-npm run escenario:auditoria-caida  # la falla nueva: con la auditoría caída nadie abre, y EC-01 queda en rojo a propósito
-npm run medir                      # p50 y p95 de la decisión y de la respuesta completa
+npm run escenario:auditoria-caida  # la falla nueva, en verde: con la auditoría o los vínculos caídos nadie abre
+npm run medir                      # p50 y p95 de la decisión y de la respuesta; no pisa una medición ya guardada
 ```
 
 Para ver el rojo de antes de las tácticas: `git checkout 942e435` y `npm run escenario`; después, `git checkout main`.
