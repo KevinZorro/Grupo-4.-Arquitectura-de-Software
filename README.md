@@ -41,8 +41,10 @@ permisos, 0 falsos rechazos (los 120 con vínculo abren; negar todo también dar
 autorización en p95 ≤ 300 ms con 350 sesiones concurrentes y el 100 % de los accesos registrados en ≤ 2 s. Las medidas, su origen y su ventana (6:00 a 20:00) están en `docs/vision.md` §4 y en RNF-02 del plan.
 
 **Por qué este y no otro.** ADR-000 pone la confidencialidad y la auditabilidad primero, y el caso dice que el riesgo es
-el acceso indebido interno. La falla se reproduce a voluntad: la batería trae los 80 casos sin vínculo y, sin la
-táctica, la historia se entrega. Los descartados:
+el acceso indebido interno. La guía advierte que casi siempre se elige un escenario de disponibilidad o rendimiento,
+porque su falla se provoca a voluntad. En este también: un escenario de seguridad tiene falla reproducible si el
+intento indebido se vuelve un caso de prueba. La batería trae los 80 casos sin vínculo, 20 de cada tipo, y sin la
+táctica la historia se entrega; no depende de un ataque real ni del azar. Los descartados:
 
 - **EC-02 (un tercero no responde):** va segundo en ADR-000 y sus tácticas (timeout y circuit breaker, RES-1 y RES-2)
   están planeadas para el sprint 4. Queda como pendiente.
