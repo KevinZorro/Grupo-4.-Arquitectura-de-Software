@@ -36,7 +36,7 @@ Nefer Sneyder Rojas Porras · Kevin David Zorro Hernández · Juan Camilo Uribe 
 
 **Qué se prueba.** Un funcionario autenticado, sin cita, episodio ni interconsulta con el paciente, intenta abrir su
 historia. El sistema debe negar sin revelar si el paciente existe y dejar el intento registrado. La prueba usa 200
-casos (120 con vínculo y 80 sin él, de cuatro tipos; el reparto 120/80 es un supuesto nuestro) y exige: 0 falsos
+casos (120 con vínculo y 80 sin él, de cuatro tipos: funcionario sin vínculo, vínculo vencido, otra sede y paciente inexistente; el reparto 120/80 es un supuesto nuestro) y exige: 0 falsos
 permisos, 0 falsos rechazos (los 120 con vínculo abren; negar todo también daría cero falsos permisos), decisión de
 autorización en p95 ≤ 300 ms con 350 sesiones concurrentes y el 100 % de los accesos registrados en ≤ 2 s. Las medidas, su origen y su ventana (6:00 a 20:00) están en `docs/vision.md` §4 y en RNF-02 del plan.
 
@@ -60,7 +60,7 @@ necesita Docker. Queda fuera de los workspaces, por eso el
     cd escenario
     npm run escenario                  # con la falla: los 80 casos sin vínculo
     npm run escenario:sin-falla        # solo los casos con vínculo
-    npm run escenario:auditoria-caida  # auditoría caída: nadie abre una historia (falla cerrada); dos pruebas fallan a propósito
+    npm run escenario:auditoria-caida  # auditoría caída: nadie abre una historia (falla cerrada)
     npm run medir                      # p50 y p95 con 350 sesiones concurrentes
 
 Para ver la prueba en rojo, antes de la táctica: `git checkout 942e435` y `npm run escenario` desde `escenario/`;
