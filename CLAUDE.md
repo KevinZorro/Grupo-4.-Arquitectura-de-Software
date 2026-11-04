@@ -36,6 +36,8 @@ videoconsulta e historia clínica bajo reserva legal para una red de 12 IPS. Sei
   `prisma/schema/<módulo>.prisma`. Guía, usuarios semilla y recetas en `apps/core/README.md`.
 - `apps/core/src/bandeja-salida/`: bandeja de salida (infraestructura, tabla `evento_saliente`). Los módulos guardan
   eventos con `BandejaSalidaService.encolar(tx, { clave, datos })` y el publicador los envía a RabbitMQ.
+- `escenario/`: prototipo en JavaScript puro del camino de EC-01 (segundo previo, ADR-003), fuera de los workspaces y sin
+  Docker: `cd escenario && npm run escenario`. Ojo: `npm run medir` sobrescribe `salida/medicion-antes.*`.
 
 ## Arquitectura
 Monolito modular (agenda, pagos, historia, autorización, identidad) en el que ningún módulo consulta las tablas de
