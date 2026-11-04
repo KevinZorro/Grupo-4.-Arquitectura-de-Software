@@ -60,10 +60,10 @@ necesita Docker. Queda fuera de los workspaces, por eso el
     cd escenario
     npm run escenario                  # con la falla: los 80 casos sin vínculo
     npm run escenario:sin-falla        # solo los casos con vínculo
-    npm run escenario:auditoria-caida  # falla cerrada: con la auditoría caída se niega todo en ≤ 2 s
+    npm run escenario:auditoria-caida  # auditoría caída: nadie abre una historia (falla cerrada); dos pruebas fallan a propósito
     npm run medir                      # p50 y p95 con 350 sesiones concurrentes
 
-Para ver la prueba en rojo, antes de la táctica: `git checkout <hash-del-commit-en-rojo>` y `npm run escenario`;
+Para ver la prueba en rojo, antes de la táctica: `git checkout 942e435` y `npm run escenario` desde `escenario/`;
 después, `git checkout main`. El PR del escenario se fusionó con merge commit, no con squash, para que ese commit siga
 en el historial.
 
