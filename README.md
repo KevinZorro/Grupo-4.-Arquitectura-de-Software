@@ -69,18 +69,18 @@ Para ver la prueba en rojo, antes de la táctica: `git checkout 942e435` y `npm 
 después, `git checkout main`. El PR del escenario se fusionó con merge commit, no con squash, para que ese commit siga
 en el historial.
 
-**Video** (máximo 10 minutos, YouTube oculto): <enlace pendiente, se agrega en PRV-13>
+**Video** (máximo 10 minutos, YouTube oculto): <https://youtu.be/ed9f9F37IKo>
 
 **Quién hizo qué.**
 
 | Persona | Hizo |
 |---|---|
 | Angel Montañez | Camino de abrir historia sin táctica y prueba de los 200 casos en rojo |
-| Kevin Zorro | Autorización por vínculo con el usuario de la sesión, ADR-003, renumeración de los ADR y fusión del PR |
+| Kevin Zorro | Autorización por vínculo con el usuario de la sesión, ADR-003, renumeración de los ADR, fusión del PR y edición del video |
 | Juan Camilo Uribe | Script de medición, registro síncrono en auditoría con falla cerrada y sección de costo del ADR-003 |
 | Nefer Rojas | ADR-002 con el diagrama de la falla y ADR-001 en versión final |
 | Javier Rincón | Vista de contenedores con el adaptador del modelo y el camino de EC-01 |
-| Wilhen Gutiérrez | README del escenario, revisión cruzada y edición del video |
+| Wilhen Gutiérrez | README del escenario y revisión cruzada |
 
 ## Cómo ver la vista de contenedores
 
