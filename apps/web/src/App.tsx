@@ -1,8 +1,10 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './Layout';
+import BuscarFranjas from './paginas/BuscarFranjas';
+import MisCitas from './paginas/MisCitas';
+import GuardaPaciente from './sesion/GuardaPaciente';
 import { SesionProvider } from './sesion/SesionContext';
 
-// Las pantallas reales llegan con AGE-8.
 const Pagina = ({ titulo }: { titulo: string }) => <h1>{titulo}</h1>;
 
 export default function App() {
@@ -12,8 +14,10 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Pagina titulo="Inicio" />} />
-            <Route path="/franjas" element={<Pagina titulo="Buscar franjas" />} />
-            <Route path="/citas" element={<Pagina titulo="Mis citas" />} />
+            <Route element={<GuardaPaciente />}>
+              <Route path="/franjas" element={<BuscarFranjas />} />
+              <Route path="/citas" element={<MisCitas />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

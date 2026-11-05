@@ -9,14 +9,14 @@ export default function SelectorUsuario() {
     <Select
       size="small"
       displayEmpty
-      value={usuario?.id ?? ''}
+      value={usuario?.correo ?? ''}
       onChange={(e) => elegir(e.target.value)}
       sx={{ bgcolor: 'white' }}
     >
       <MenuItem value="">Elegir usuario semilla</MenuItem>
       {USUARIOS_SEMILLA.map((u) => (
-        <MenuItem key={u.id} value={u.id}>
-          {u.nombre}
+        <MenuItem key={u.correo} value={u.correo}>
+          {u.nombre} ({u.rol})
         </MenuItem>
       ))}
     </Select>
