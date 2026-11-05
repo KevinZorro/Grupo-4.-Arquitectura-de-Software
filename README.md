@@ -46,8 +46,8 @@ porque su falla se provoca a voluntad. En este también: un escenario de segurid
 intento indebido se vuelve un caso de prueba. La batería trae los 80 casos sin vínculo, 20 de cada tipo, y sin la
 táctica la historia se entrega; no depende de un ataque real ni del azar. Los descartados:
 
-- **EC-02 (un tercero no responde):** va segundo en ADR-000 y sus tácticas (timeout y circuit breaker, RES-1 y RES-2)
-  están planeadas para el sprint 4. Queda como pendiente.
+- **EC-02 (un tercero no responde):** va segundo en ADR-000 y sus tácticas (timeout y circuit breaker) quedan
+  para entregas futuras. Queda como pendiente.
 - **Confirmación repetida:** `packages/eventos` ya trae el consumidor idempotente con su prueba; repetirlo en
   JavaScript no demostraría nada nuevo.
 
