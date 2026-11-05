@@ -1,6 +1,6 @@
 # Matriz de cumplimiento de fechas límite
 
-Generada el 2026-11-04 16:29:59 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
+Generada el 2026-11-04 23:06:05 (America/Bogota). Una tarea cuenta a tiempo si su issue se cierra a más tardar el día de su fecha límite.
 
 ## Resumen por persona
 
