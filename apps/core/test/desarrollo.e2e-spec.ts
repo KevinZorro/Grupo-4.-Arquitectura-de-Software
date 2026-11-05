@@ -47,6 +47,21 @@ describe('núcleo en desarrollo (e2e)', () => {
     expect(body.security).toContainEqual({ 'usuario-dev': [] });
   });
 
+  it('documents the agenda routes with their filters and responses', async () => {
+    const { body } = await request(app.getHttpServer()).get('/docs-json').expect(200);
+    const franjas = body.paths['/api/v1/franjas'].get;
+
+    expect(franjas.parameters.map((p: { name: string }) => p.name).sort()).toEqual([
+      'especialidadId',
+      'fecha',
+      'modalidad',
+      'profesionalId',
+      'sedeId',
+    ]);
+    expect(franjas.responses['200'].content['application/json'].schema).toBeDefined();
+    expect(body.paths['/api/v1/citas/mias'].get.responses['200']).toBeDefined();
+  });
+
   it('accepts the development header', async () => {
     const response = await request(app.getHttpServer())
       .get('/api/v1/protegido')

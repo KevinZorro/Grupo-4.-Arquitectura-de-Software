@@ -1,19 +1,20 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { PrismaClient } from '../src/generated/prisma/client';
-import { ESPECIALIDADES, PROFESIONALES, SEDES } from '../prisma/seed/agenda';
+import { ESPECIALIDADES, franjasDeLaSemilla, PROFESIONALES, SEDES } from '../prisma/seed/agenda';
 import { PACIENTES, USUARIOS } from '../prisma/seed/identidad';
 import { sembrarTodo } from '../prisma/seed/index';
 
 async function contar(prisma: PrismaClient) {
-  const [sedes, especialidades, profesionales, pacientes, usuarios] = await Promise.all([
+  const [sedes, especialidades, profesionales, franjas, pacientes, usuarios] = await Promise.all([
     prisma.sede.count(),
     prisma.especialidad.count(),
     prisma.profesional.count(),
+    prisma.franja.count(),
     prisma.paciente.count(),
     prisma.usuario.count(),
   ]);
-  return { sedes, especialidades, profesionales, pacientes, usuarios };
+  return { sedes, especialidades, profesionales, franjas, pacientes, usuarios };
 }
 
 describe('semilla de catálogos (e2e)', () => {
@@ -31,13 +32,17 @@ describe('semilla de catálogos (e2e)', () => {
   });
 
   it('loads the 12 sedes and the made-up catalog', async () => {
-    expect(await contar(prisma)).toEqual({
+    expect(await contar(prisma)).toMatchObject({
       sedes: 12,
       especialidades: ESPECIALIDADES.length,
       profesionales: PROFESIONALES.length,
       pacientes: PACIENTES.length,
       usuarios: USUARIOS.length,
     });
+    // Other e2e files and earlier days add franjas of their own, so only a lower bound holds.
+    expect((await contar(prisma)).franjas).toBeGreaterThanOrEqual(
+      franjasDeLaSemilla(new Date()).length,
+    );
   });
 
   it('is idempotent: running it again changes no count', async () => {

@@ -24,7 +24,9 @@ describe('arranque del proceso (e2e)', () => {
   let scratchRoot: string;
 
   beforeAll(() => {
-    execFileSync('npx', ['tsc', '-p', 'tsconfig.build.json', '--outDir', BUILD_DIR], {
+    // Node runs tsc itself: npx needs a shell on Windows, and BUILD_DIR may contain spaces.
+    const tsc = require.resolve('typescript/bin/tsc');
+    execFileSync(process.execPath, [tsc, '-p', 'tsconfig.build.json', '--outDir', BUILD_DIR], {
       cwd: APP_DIR,
       stdio: 'pipe',
     });

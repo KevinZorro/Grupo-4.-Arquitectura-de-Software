@@ -74,15 +74,51 @@ legibles, `00000000-0000-4000-80KK-NNNNNNNNNNNN`, donde `KK` es el tipo (01 sede
 En un controlador, `@UsuarioActual()` entrega a quien llama (`id`, `correo`, `nombre`, `rol`, `pacienteId`,
 `profesionalId`). Cuando llegue el JWT cambia la guarda y estos dos decoradores siguen igual.
 
+## Agenda (AGE-1 a AGE-3)
+
+| Ruta                     | Qué hace                                                                                                                                                 |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /api/v1/franjas`    | Franjas libres y futuras. Filtros: `especialidadId`, `sedeId`, `profesionalId`, `modalidad`, `fecha` (`AAAA-MM-DD`, día de Colombia)                     |
+| `GET /api/v1/citas/mias` | Citas del paciente que llama, con su estado. Otro rol recibe 403                                                                                         |
+| `POST /api/v1/citas`     | Cabecera `Idempotency-Key` (UUID) y cuerpo `{ franjaId, modalidad }`. Virtual: `PENDIENTE_PAGO`, bloqueo de 15 min y `urlPago`. Presencial: `CONFIRMADA` |
+
+- Estados y transiciones en `src/agenda/estado-cita.ts`; una transición inválida lanza `TransicionDeCitaInvalidaError`.
+- Una franja admite una sola cita que no esté `CANCELADA`: lo garantiza el índice único parcial `cita_franja_activa_key`
+  de la migración, no el código. Dos pacientes que piden la misma franja reciben un 201 y un 409.
+- La misma `Idempotency-Key` del mismo paciente devuelve la misma cita; con otra franja responde 422.
+- Si el pago no arranca, la cita pasa a `CANCELADA` (motivo `FALLA_INICIO_PAGO`), la franja queda libre y se responde 503.
+- La semilla crea franjas de lunes a viernes de las dos próximas semanas: 8:00 y 8:30 presenciales y 10:00 y 10:30
+  virtuales, hora de Colombia, guardadas en UTC. Repetirla solo agrega los días que falten.
+
+**Puertos de la reserva.** La reserva depende de dos interfaces de `src/agenda/puertos.ts`, exportadas en
+`src/agenda/index.ts`: `BANDEJA_SALIDA` (`encolar(tx, evento)` dentro de la transacción de quien llama) e
+`INICIADOR_PAGO` (`iniciarPago(idCita, monto) -> { idTransaccion, urlPago }`, idempotente por `idCita`). La agenda no
+provee esos tokens: los exporta el módulo dueño desde un módulo `@Global()`, y así pagos puede importar la agenda sin un
+ciclo. `BandejaSalidaModule` ya exporta el suyo; PAG-2 debe agregar en `PagosModule`, marcado `@Global()`:
+
+```ts
+{ provide: INICIADOR_PAGO, useExisting: PagosService }
+```
+
+Hasta entonces la agenda usa un suplente y lo avisa en el log al arrancar: toda reserva virtual se compensa con 503. El
+copago de la cita virtual se guarda en `cita.copago_cop` al reservar (`COPAGO_CITA_VIRTUAL_COP`, un valor ficticio de
+20.000 COP).
+
+**Para el webhook (PAG-3).** `AgendaModule` exporta `EstadoCitasService`. Sus métodos reciben la transacción de quien
+llama, cambian el estado solo si la cita sigue en `PENDIENTE_PAGO` y encolan el evento en esa misma transacción:
+`confirmarPorPago(tx, idCita)` (`CitaConfirmada`) y `cancelarPorPagoRechazado(tx, idCita)` (`CitaCancelada` con
+`PAGO_RECHAZADO`, que libera la franja). Responden `false` sin tocar nada si la cita ya había salido de `PENDIENTE_PAGO`,
+y lanzan `CitaInexistenteError` si no existe.
+
 ## Módulos y tablas
 
-| Módulo       | Carpeta            | Esquema                               | Tablas                                | Tareas                     |
-| ------------ | ------------------ | ------------------------------------- | ------------------------------------- | -------------------------- |
-| agenda       | `src/agenda`       | `agenda.prisma`                       | `sede`, `especialidad`, `profesional` | AGE-1 agrega franja y cita |
-| identidad    | `src/identidad`    | `identidad.prisma`                    | `usuario`, `paciente`                 | IDN-*                      |
-| pagos        | `src/pagos`        | `pagos.prisma` (aún no existe)        | —                                     | PAG-*                      |
-| historia     | `src/historia`     | `historia.prisma` (aún no existe)     | —                                     | HCL-*                      |
-| autorizacion | `src/autorizacion` | `autorizacion.prisma` (aún no existe) | —                                     | AUT-*                      |
+| Módulo       | Carpeta            | Esquema                               | Tablas                                                  | Tareas |
+| ------------ | ------------------ | ------------------------------------- | ------------------------------------------------------- | ------ |
+| agenda       | `src/agenda`       | `agenda.prisma`                       | `sede`, `especialidad`, `profesional`, `franja`, `cita` | AGE-*  |
+| identidad    | `src/identidad`    | `identidad.prisma`                    | `usuario`, `paciente`                                   | IDN-*  |
+| pagos        | `src/pagos`        | `pagos.prisma` (aún no existe)        | —                                                       | PAG-*  |
+| historia     | `src/historia`     | `historia.prisma` (aún no existe)     | —                                                       | HCL-*  |
+| autorizacion | `src/autorizacion` | `autorizacion.prisma` (aún no existe) | —                                                       | AUT-*  |
 
 `src/config`, `src/prisma`, `src/health` y `src/generated` no son módulos de dominio: sirven a todos.
 
@@ -158,5 +194,4 @@ levantarla.
 
 - Dockerfile y servicio `core` en `docker-compose.yml`: hoy el compose solo levanta las bases, RabbitMQ y Mailpit, y el
   núcleo corre con `npm run start:dev`. Encaja en INT-1.
-- Franjas y citas con su semilla (AGE-1), bandeja de salida (EVT-3), login con JWT (IDN-1) y autorización por vínculo
-  (AUT-*).
+- Login con JWT (IDN-1) y autorización por vínculo (AUT-*).

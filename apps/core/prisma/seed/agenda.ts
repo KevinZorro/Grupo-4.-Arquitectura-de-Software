@@ -1,3 +1,8 @@
+import {
+  diaSiguiente,
+  fechaEnColombia,
+  inicioDelDiaEnColombia,
+} from '../../src/agenda/zona-horaria';
 import type { Prisma, PrismaClient } from '../../src/generated/prisma/client';
 import { forUpdate, seedId, type WithId } from './ids';
 
@@ -120,7 +125,60 @@ export const PROFESIONALES = [
   profesional(16, ORTOPEDIA, 'Paola Andrea', 'Bautista Sanabria'),
 ] satisfies Prisma.ProfesionalUncheckedCreateInput[];
 
-/** Upserts by id, so running it again restores the catalog to these values and adds nothing. */
+const DIAS_DE_AGENDA = 14;
+
+const DURACION_FRANJA_MIN = 30;
+
+/** Local hours (Colombia) of each profesional's day: presencial in the morning, virtual later. */
+const HORARIO = [
+  { hora: '08:00', modalidad: 'PRESENCIAL' },
+  { hora: '08:30', modalidad: 'PRESENCIAL' },
+  { hora: '10:00', modalidad: 'VIRTUAL' },
+  { hora: '10:30', modalidad: 'VIRTUAL' },
+] as const;
+
+function esFinDeSemana(fecha: string): boolean {
+  const dia = new Date(`${fecha}T00:00:00.000Z`).getUTCDay();
+  return dia === 0 || dia === 6;
+}
+
+/**
+ * The weekday franjas of the next two weeks, starting the day after `hoy`. Every profesional
+ * attends at one sede, so each sede and especialidad gets both modalidades.
+ */
+export function franjasDeLaSemilla(hoy: Date): Prisma.FranjaCreateManyInput[] {
+  const fechas: string[] = [];
+  let fecha = diaSiguiente(fechaEnColombia(hoy));
+  for (let dia = 0; dia < DIAS_DE_AGENDA; dia++) {
+    fechas.push(fecha);
+    fecha = diaSiguiente(fecha);
+  }
+
+  return fechas
+    .filter((fecha) => !esFinDeSemana(fecha))
+    .flatMap((fecha) =>
+      PROFESIONALES.flatMap((profesional, i) =>
+        HORARIO.map(({ hora, modalidad }) => {
+          const [horas, minutos] = hora.split(':').map(Number);
+          const iniciaEn = new Date(
+            inicioDelDiaEnColombia(fecha).getTime() + (horas * 60 + minutos) * 60_000,
+          );
+          return {
+            profesionalId: profesional.id,
+            sedeId: SEDES[i % SEDES.length].id,
+            modalidad,
+            iniciaEn,
+            terminaEn: new Date(iniciaEn.getTime() + DURACION_FRANJA_MIN * 60_000),
+          };
+        }),
+      ),
+    );
+}
+
+/**
+ * Upserts the catalog by id, so running it again restores it to these values. Franjas are only
+ * added: one that already exists for the same profesional and start is left as it is, citas and all.
+ */
 export async function sembrarAgenda(prisma: PrismaClient): Promise<void> {
   // One transaction, in this order, because profesional points at especialidad.
   await prisma.$transaction([
@@ -141,5 +199,6 @@ export async function sembrarAgenda(prisma: PrismaClient): Promise<void> {
         create: profesional,
       }),
     ),
+    prisma.franja.createMany({ data: franjasDeLaSemilla(new Date()), skipDuplicates: true }),
   ]);
 }
