@@ -1,0 +1,22 @@
+// Payments module. Only code under src/pagos may query these tables. The cita is referenced by its
+// id, without a relation: Cita belongs to the agenda module (module boundary rule, RNF-12).
+
+enum EstadoTransaccionPago {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+
+  @@map("estado_transaccion_pago")
+}
+
+model TransaccionPago {
+  idTransaccion String                @id @map("id_transaccion")
+  idCita        String                @unique @map("id_cita") @db.Uuid
+  monto         Int
+  estado        EstadoTransaccionPago @default(PENDIENTE)
+  urlPago       String                @map("url_pago")
+  creadoEn      DateTime              @default(now()) @map("creado_en") @db.Timestamptz(3)
+  actualizadoEn DateTime              @updatedAt @map("actualizado_en") @db.Timestamptz(3)
+
+  @@map("transaccion_pago")
+}
